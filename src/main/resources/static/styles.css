@@ -1,93 +1,52 @@
 /* styles.css */
 
+/* General */
 body {
     font-family: Arial, sans-serif;
     background-color: #f5f5f5;
     margin: 0;
     padding: 0;
+    transition: background-color 0.3s, color 0.3s;
 }
 
-.container {
-    max-width: 900px;
-    margin: 20px auto;
-    background: #ffffff;
-    padding: 20px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
-}
-
-.title {
-    text-align: center;
-    margin-bottom: 20px;
-    color: #333;
-}
-
-.actions {
-    text-align: right;
-    margin-bottom: 15px;
-}
-
-.btn-add {
-    background-color: #28a745;
-    color: #ffffff;
-    padding: 10px 15px;
-    text-decoration: none;
-    border-radius: 5px;
-    font-size: 14px;
-}
-
-.btn-add:hover {
-    background-color: #218838;
-}
-
-.table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-bottom: 20px;
-}
-
-.table th, .table td {
-    border: 1px solid #ddd;
-    padding: 12px;
-    text-align: left;
-}
-
-.table th {
-    background-color: #007bff;
-    color: #ffffff;
-    font-weight: bold;
-}
-
-.table tr:nth-child(even) {
-    background-color: #f9f9f9;
-}
-
-.table tr:hover {
-    background-color: #e9ecef;
-}
-
-.btn-edit, .btn-delete {
-    text-decoration: none;
-    padding: 5px 10px;
-    border-radius: 5px;
-    margin-right: 5px;
-    font-size: 12px;
-}
-
-.btn-edit {
-    background-color: #007bff;
+/* Modo oscuro */
+body.dark-mode {
+    background-color: #121212;
     color: #ffffff;
 }
 
-.btn-edit:hover {
-    background-color: #0056b3;
+body.dark-mode .card {
+    background-color: #1e1e1e;
+    color: #ffffff;
+    border-color: #444;
 }
 
-.btn-delete {
-    background-color: #dc3545;
+body.dark-mode .navbar, body.dark-mode .card-header {
+    background-color: #1c1c1c !important;
+    border-color: #1c1c1c;
+}
+
+body.dark-mode .btn-outline-light {
+    border-color: #ffffff;
     color: #ffffff;
 }
 
-.btn-delete:hover {
-    background-color: #c82333;
+body.dark-mode .btn-primary {
+    background-color: #444;
+    border-color: #555;
+    color: #ffffff;
 }
+
+body.dark-mode .btn-primary:hover {
+    background-color: #555;
+    border-color: #666;
+}
+
+body.dark-mode a.btn-danger {
+    background-color: #a93226;
+    border-color: #922b21;
+}
+
+
+
+

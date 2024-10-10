@@ -9,15 +9,16 @@ public class Cajero {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @OneToOne
+    @JoinColumn(name = "empleado_id", referencedColumnName = "id")
+    private Empleado empleado;
+
     private String username;
     private String password;
 
     @Column
     private int permisos;
 
-    @OneToOne
-    @JoinColumn(name = "empleado_id", referencedColumnName = "id")
-    private Empleado empleado;
 
     public Long getId() {
         return id;

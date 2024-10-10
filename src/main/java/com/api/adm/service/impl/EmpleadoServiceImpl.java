@@ -1,4 +1,3 @@
-// EmpleadoServiceImpl.java
 package com.api.adm.service.impl;
 
 import com.api.adm.entity.Empleado;
@@ -31,6 +30,11 @@ public class EmpleadoServiceImpl implements EmpleadoService {
     }
 
     @Override
+    public List<Empleado> buscarEmpleados(String query) {
+        return empleadoRepository.findByNombreContainingIgnoreCaseOrApellidoContainingIgnoreCase(query, query);
+    }
+
+    @Override
     public Empleado obtenerEmpleadoPorId(Long id) {
         return empleadoRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Empleado no encontrado con id: " + id));
@@ -53,4 +57,5 @@ public class EmpleadoServiceImpl implements EmpleadoService {
         empleadoRepository.delete(empleado);
     }
 }
+
 

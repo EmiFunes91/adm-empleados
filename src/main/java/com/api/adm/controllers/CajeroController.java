@@ -54,6 +54,7 @@ public class CajeroController {
         return cajeroService.actualizarCajero(id, cajero);
     }
 
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> eliminarCajero(@PathVariable Long id) {
         cajeroService.eliminarCajero(id);

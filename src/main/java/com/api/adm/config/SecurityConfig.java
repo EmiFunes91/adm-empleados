@@ -18,14 +18,21 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(AbstractHttpConfigurer::disable) // Deshabilitar CSRF si no es necesario
+                .csrf(AbstractHttpConfigurer::disable) // Deshabilitar CSRF si solo usas APIs REST
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/**").authenticated()  // Requiere autenticación para las APIs
-                        .anyRequest().permitAll()  // Permitir el acceso a otras rutas
+                        .requestMatchers("/cajeros/**", "/empleados/**", "/dashboard").hasRole("ADMIN")  // Solo ADMIN puede acceder a estas rutas
+                        .anyRequest().permitAll()  // Permitir el acceso a otras rutas (login, home, etc.)
                 )
                 .formLogin(form -> form  // Configurar el formulario de login
                         .loginPage("/login")  // Definir la página de login personalizada
+                        .defaultSuccessUrl("/dashboard", true)  // Redirigir a dashboard tras iniciar sesión
                         .permitAll()  // Permitir acceso a la página de login
+                )
+                .logout(logout -> logout  // Configurar el logout
+                        .logoutUrl("/logout")  // URL para cerrar sesión
+                        .logoutSuccessUrl("/login?logout")  // Redirigir tras cerrar sesión
+                        .permitAll()
                 );
 
         return http.build();
@@ -33,13 +40,14 @@ public class SecurityConfig {
 
     @Bean
     public UserDetailsService userDetailsService() {
-        UserDetails user = User.builder()
+        UserDetails admin = User.builder()
                 .username("admin")
                 .password(passwordEncoder().encode("admin"))
                 .roles("ADMIN")
                 .build();
 
-        return new InMemoryUserDetailsManager(user);
+
+        return new InMemoryUserDetailsManager(admin);
     }
 
     @Bean
@@ -47,5 +55,8 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 }
+
+
+
 
 

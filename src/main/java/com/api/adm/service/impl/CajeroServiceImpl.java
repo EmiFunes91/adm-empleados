@@ -35,7 +35,8 @@ public class CajeroServiceImpl implements CajeroService {
 
     @Override
     public List<Cajero> buscarCajeros(String query) {
-        return List.of();
+        // Utiliza el método del repositorio para buscar por nombre o apellido del empleado
+        return cajeroRepository.findByEmpleadoNombreContainingIgnoreCaseOrEmpleadoApellidoContainingIgnoreCase(query, query);
     }
 
     @Override

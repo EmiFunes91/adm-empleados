@@ -10,7 +10,7 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
+import java.util.stream.Collectors;
 
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
@@ -20,13 +20,27 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        // Buscar al usuario en el repositorio
         Usuario usuario = usuarioRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado: " + username));
 
+        // Asignar roles con el prefijo ROLE_ y mostrar los roles cargados en consola
+        var authorities = usuario.getRoles().stream()
+                .map(role -> {
+                    String roleName = "ROLE_" + role.getName(); // Asegúrate de obtener el nombre del rol correctamente
+                    System.out.println("Rol cargado: " + roleName); // Imprimir los roles para verificación
+                    return new SimpleGrantedAuthority(roleName);
+                })
+                .collect(Collectors.toList());
+
+        // Retornar los detalles del usuario con los roles correspondientes
         return new User(
                 usuario.getUsername(),
                 usuario.getPassword(),
-                Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + usuario.getRole()))
+                authorities
         );
     }
 }
+
+
+

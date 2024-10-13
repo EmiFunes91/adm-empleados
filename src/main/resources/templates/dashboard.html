@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/springsecurity6" lang="es">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -18,11 +18,18 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav ms-auto">
-        <li class="nav-item">
+        <!-- Solo mostrar Empleados y Cajeros a los roles autorizados -->
+        <li class="nav-item" sec:authorize="hasAnyRole('ADMIN', 'USER')">
           <a class="nav-link" th:href="@{/empleados}">Empleados</a>
         </li>
-        <li class="nav-item">
+        <li class="nav-item" sec:authorize="hasAnyRole('ADMIN', 'USER')">
           <a class="nav-link" th:href="@{/cajeros}">Cajeros</a>
+        </li>
+        <li class="nav-item" sec:authorize="hasAnyRole('USER')">
+          <a class="nav-link" th:href="@{/productos}">Productos</a>
+        </li>
+        <li class="nav-item" sec:authorize="hasAnyRole('ADMIN')">
+          <a class="nav-link" th:href="@{/usuarios}">Usuarios</a>
         </li>
         <li class="nav-item">
           <a class="nav-link btn btn-danger text-white" th:href="@{/logout}">Cerrar Sesión</a>
@@ -40,12 +47,12 @@
 <div class="container mt-5">
   <div class="row text-center">
     <h1 class="mb-4">Panel de Control</h1>
-    <p class="lead">Bienvenido al panel de administración. Selecciona una de las opciones para gestionar.</p>
+    <p class="lead">Bienvenido al panel de administración.</p>
   </div>
 
   <div class="row mt-4">
-    <!-- Tarjeta para gestión de empleados -->
-    <div class="col-md-6 mb-4">
+    <!-- Gestión de Empleados: Solo ADMIN y USER pueden ver esta sección -->
+    <div sec:authorize="hasAnyRole('ADMIN', 'USER')" class="col-md-6 mb-4">
       <div class="card shadow-sm">
         <div class="card-body text-center">
           <h5 class="card-title">Gestión de Empleados</h5>
@@ -54,13 +61,36 @@
         </div>
       </div>
     </div>
-    <!-- Tarjeta para gestión de cajeros -->
-    <div class="col-md-6 mb-4">
+
+    <!-- Gestión de Cajeros: Solo ADMIN y USER pueden ver esta sección -->
+    <div sec:authorize="hasAnyRole('ADMIN', 'USER')" class="col-md-6 mb-4">
       <div class="card shadow-sm">
         <div class="card-body text-center">
           <h5 class="card-title">Gestión de Cajeros</h5>
           <p class="card-text">Administra los cajeros y sus permisos.</p>
           <a class="btn btn-primary" th:href="@{/cajeros}">Ir a Cajeros</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Gestión de Usuarios: Solo visible para ADMIN -->
+    <div sec:authorize="hasAnyRole('ADMIN')" class="col-md-6 mb-4">
+      <div class="card shadow-sm">
+        <div class="card-body text-center">
+          <h5 class="card-title">Gestión de Usuarios</h5>
+          <p class="card-text">Administra los usuarios del sistema.</p>
+          <a class="btn btn-primary" th:href="@{/usuarios}">Ir a Usuarios</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Gestión de Productos: Solo visible para ADMIN, EMPLEADO y USER -->
+    <div sec:authorize="hasAnyRole('EMPLEADO', 'USER')" class="col-md-6 mb-4">
+      <div class="card shadow-sm">
+        <div class="card-body text-center">
+          <h5 class="card-title">Gestión de Productos</h5>
+          <p class="card-text">Administra los productos del sistema.</p>
+          <a class="btn btn-primary" th:href="@{/productos}">Ir a Productos</a>
         </div>
       </div>
     </div>
@@ -71,6 +101,11 @@
 <script src="js/darkMode.js"></script>
 </body>
 </html>
+
+
+
+
+
 
 
 

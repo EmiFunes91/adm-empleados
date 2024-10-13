@@ -1,6 +1,8 @@
 package com.api.adm.entity;
 
 import jakarta.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 public class Usuario {
@@ -11,7 +13,14 @@ public class Usuario {
     private String username;
     private String password;
     private String email;
-    private String role; // "ADMIN" o "USER"
+
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "usuario_roles",
+            joinColumns = @JoinColumn(name = "usuario_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id")
+    )
+    private Set<Role> roles = new HashSet<>();  // Cambiado a Set<Role>
 
     // Getters y setters
     public Long getId() {
@@ -46,13 +55,17 @@ public class Usuario {
         this.email = email;
     }
 
-    public String getRole() {
-        return role;
+    public Set<Role> getRoles() {
+        return roles;
     }
 
-    public void setRole(String role) {
-        this.role = role;
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles;
     }
 }
+
+
+
+
 
 

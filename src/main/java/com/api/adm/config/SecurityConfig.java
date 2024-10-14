@@ -24,8 +24,7 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/usuarios/**").hasRole("ADMIN") // Solo ADMIN puede gestionar usuarios
-                        .requestMatchers("/empleados/**", "/cajeros/**").hasAnyRole("ADMIN", "USER") // ADMIN y USER pueden gestionar empleados y cajeros
-                        .requestMatchers("/productos/**").hasAnyRole("USER", "EMPLEADO", "CAJERO") // Permitir acceso a productos para todos los roles, excepto cliente
+                        .requestMatchers("/empleados/**", "/cajeros/**").hasRole("USER") // Solo USER puede gestionar empleados y cajeros
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
@@ -42,6 +41,7 @@ public class SecurityConfig {
 
         return http.build();
     }
+
 
     @Bean
     public PasswordEncoder passwordEncoder() {

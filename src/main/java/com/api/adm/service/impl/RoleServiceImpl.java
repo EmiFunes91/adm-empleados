@@ -34,4 +34,20 @@ public class RoleServiceImpl implements RoleService {
     public Role merge(Role role) {
         return roleRepository.save(role);
     }
+
+    // Método para inicializar roles si no existen
+    public void inicializarRoles() {
+        if (roleRepository.findByName("ADMIN").isEmpty()) {
+            Role adminRole = new Role();
+            adminRole.setName("ADMIN");
+            roleRepository.save(adminRole);
+        }
+
+        if (roleRepository.findByName("USER").isEmpty()) {
+            Role userRole = new Role();
+            userRole.setName("USER");
+            roleRepository.save(userRole);
+        }
+    }
 }
+

@@ -38,23 +38,23 @@ public class DataInitializer implements CommandLineRunner {
             throw new RuntimeException("La variable de entorno 'ADMIN_PASSWORD' no está configurada.");
         }
 
+        // Crear roles si no existen
+        Role adminRole = roleService.buscarPorNombre("ADMIN").orElseGet(() -> {
+            Role role = new Role();
+            role.setName("ADMIN");
+            return roleService.guardar(role); // Guardar el rol antes de usarlo
+        });
+
+        Role userRole = roleService.buscarPorNombre("USER").orElseGet(() -> {
+            Role role = new Role();
+            role.setName("USER");
+            return roleService.guardar(role); // Guardar el rol antes de usarlo
+        });
+
+        // Verificar si el usuario administrador ya existe
         Optional<Usuario> usuarioOptional = usuarioService.buscarPorUsername("admin");
 
         if (usuarioOptional.isEmpty()) {
-            Optional<Role> adminRoleOptional = roleService.buscarPorNombre("ADMIN");
-            Role adminRole;
-
-            if (adminRoleOptional.isEmpty()) {
-                // Crear rol si no existe
-                adminRole = new Role();
-                adminRole.setName("ADMIN");
-                adminRole = roleService.guardar(adminRole);
-                logger.info("Rol ADMIN creado.");
-            } else {
-                // Usar rol existente
-                adminRole = adminRoleOptional.get();
-            }
-
             // Crear usuario administrador
             Usuario admin = new Usuario();
             admin.setUsername("admin");
@@ -62,7 +62,7 @@ public class DataInitializer implements CommandLineRunner {
             admin.setEmail("admin@ejemplo.com");
 
             Set<Role> roles = new HashSet<>();
-            roles.add(adminRole); // Asignar rol persistido
+            roles.add(adminRole); // Asignar rol ADMIN
             admin.setRoles(roles);
 
             // Guardar usuario
@@ -73,6 +73,9 @@ public class DataInitializer implements CommandLineRunner {
         }
     }
 }
+
+
+
 
 
 

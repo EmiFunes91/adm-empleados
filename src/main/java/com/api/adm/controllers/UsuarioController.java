@@ -11,15 +11,13 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import jakarta.validation.Valid;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/usuarios")
@@ -37,79 +35,118 @@ public class UsuarioController {
     @Autowired
     private RoleService roleService;
 
-    @GetMapping("/registro")
-    public String mostrarFormularioDeRegistro(Model model) {
-        model.addAttribute("usuarioDTO", new UsuarioDTO());
-
-        // Cargar todos los roles desde el servicio
-        List<Role> rolesDisponibles = roleService.obtenerTodosLosRoles();
-        model.addAttribute("roles", rolesDisponibles);
-
-        return "registro";
-    }
-
-
-    @PostMapping("/guardar")
-    public String guardarUsuario(@Valid @ModelAttribute("usuarioDTO") UsuarioDTO usuarioDTO, BindingResult result, Model model) {
-        if (result.hasErrors()) {
-            List<Role> rolesDisponibles = roleService.obtenerTodosLosRoles();
-            model.addAttribute("roles", rolesDisponibles); // Asegúrate de recargar los roles en caso de error
-            return "registro";
-        }
-
-        if (usuarioService.existePorEmail(usuarioDTO.getEmail())) {
-            model.addAttribute("error", "El correo electrónico ya está en uso.");
-            List<Role> rolesDisponibles = roleService.obtenerTodosLosRoles();
-            model.addAttribute("roles", rolesDisponibles); // Recargar roles si hay error
-            return "registro";
-        }
-
-        if (usuarioService.existePorUsername(usuarioDTO.getUsername())) {
-            model.addAttribute("error", "El nombre de usuario ya está en uso.");
-            List<Role> rolesDisponibles = roleService.obtenerTodosLosRoles();
-            model.addAttribute("roles", rolesDisponibles); // Recargar roles si hay error
-            return "registro";
-        }
-
-        try {
-            Usuario usuario = new Usuario();
-            usuario.setUsername(usuarioDTO.getUsername());
-            usuario.setPassword(passwordEncoder.encode(usuarioDTO.getPassword()));
-            usuario.setEmail(usuarioDTO.getEmail());
-
-            // Asignar roles seleccionados al usuario
-            Set<Role> roles = new HashSet<>();
-            for (String roleName : usuarioDTO.getRoles()) {
-                Role role = roleService.buscarPorNombre(roleName).orElseThrow(() -> new RuntimeException("Rol no encontrado: " + roleName));
-                roles.add(role);
-            }
-            usuario.setRoles(roles);
-
-            usuarioService.guardarUsuario(usuario);
-
-            String asunto = "¡Bienvenido a nuestra aplicación!";
-            String mensaje = String.format(
-                    "Hola %s,\n\nGracias por registrarte en nuestra aplicación. Esperamos que disfrutes de la experiencia.\n\nSaludos,\nEl equipo de la aplicación.",
-                    usuario.getUsername()
-            );
-            emailService.enviarEmailDeConfirmacion(usuario.getEmail(), asunto, mensaje);
-
-            return "redirect:/usuarios/registro?success=true";
-        } catch (Exception e) {
-            e.printStackTrace();
-            model.addAttribute("error", "Ocurrió un problema al registrar el usuario.");
-            List<Role> rolesDisponibles = roleService.obtenerTodosLosRoles();
-            model.addAttribute("roles", rolesDisponibles); // Recargar roles si hay excepción
-            return "registro";
-        }
-    }
-
+    // Lista todos los usuarios (solo para ADMIN)
     @GetMapping
     public String listarUsuarios(Model model) {
         model.addAttribute("usuarios", usuarioService.obtenerTodosLosUsuarios());
         return "usuarios";
     }
+
+    @GetMapping("/registro")
+    public String mostrarFormularioDeRegistro(Model model) {
+        model.addAttribute("usuarioDTO", new UsuarioDTO());
+
+        // Obtener todos los roles (ADMIN, USER), si no están en la base de datos, los añadimos aquí
+        List<Role> rolesDisponibles = roleService.obtenerTodosLosRoles();
+        model.addAttribute("roles", rolesDisponibles);
+        return "registro";
+    }
+
+    @PostMapping("/guardar")
+    public String guardarUsuario(@Valid @ModelAttribute("usuarioDTO") UsuarioDTO usuarioDTO, BindingResult result, Model model) {
+        if (result.hasErrors()) {
+            return "registro";
+        }
+
+        if (usuarioService.existePorEmail(usuarioDTO.getEmail())) {
+            model.addAttribute("error", "El correo electrónico ya está en uso.");
+            return "registro";
+        }
+
+        if (usuarioService.existePorUsername(usuarioDTO.getUsername())) {
+            model.addAttribute("error", "El nombre de usuario ya está en uso.");
+            return "registro";
+        }
+
+        Usuario usuario = new Usuario();
+        usuario.setUsername(usuarioDTO.getUsername());
+        usuario.setPassword(passwordEncoder.encode(usuarioDTO.getPassword()));
+        usuario.setEmail(usuarioDTO.getEmail());
+
+        Set<Role> roles = new HashSet<>();
+        for (String roleName : usuarioDTO.getRoles()) {
+            Role role = roleService.buscarPorNombre(roleName).orElseThrow(() -> new RuntimeException("Role no encontrado: " + roleName));
+            roles.add(role);
+        }
+        usuario.setRoles(roles);
+
+        usuarioService.guardarUsuario(usuario);
+
+        emailService.enviarEmailDeConfirmacion(usuario.getEmail(), "¡Bienvenido a nuestra aplicación!",
+                String.format("Hola %s,\n\nGracias por registrarte en nuestra aplicación.", usuario.getUsername()));
+
+        return "redirect:/usuarios?success=created";
+    }
+
+    // Editar usuario (solo ADMIN)
+    @GetMapping("/editar/{id}")
+    public String editarUsuario(@PathVariable Long id, Model model) {
+        Usuario usuario = usuarioService.obtenerUsuarioPorId(id).orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+        UsuarioDTO usuarioDTO = new UsuarioDTO();
+        usuarioDTO.setUsername(usuario.getUsername());
+        usuarioDTO.setEmail(usuario.getEmail());
+        usuarioDTO.setRoles(usuario.getRoles().stream().map(Role::getName).collect(Collectors.toSet()));
+
+        model.addAttribute("usuarioDTO", usuarioDTO);
+        List<Role> rolesDisponibles = roleService.obtenerTodosLosRoles();
+        model.addAttribute("roles", rolesDisponibles);
+        return "editarUsuario";
+    }
+
+    @PostMapping("/editar/{id}")
+    public String actualizarUsuario(@PathVariable Long id, @Valid @ModelAttribute("usuarioDTO") UsuarioDTO usuarioDTO, BindingResult result, Model model) {
+        if (result.hasErrors()) {
+            return "editarUsuario";
+        }
+
+        Usuario usuario = usuarioService.obtenerUsuarioPorId(id).orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+        usuario.setUsername(usuarioDTO.getUsername());
+        usuario.setEmail(usuarioDTO.getEmail());
+
+        Set<Role> roles = new HashSet<>();
+        for (String roleName : usuarioDTO.getRoles()) {
+            Role role = roleService.buscarPorNombre(roleName).orElseThrow(() -> new RuntimeException("Role no encontrado: " + roleName));
+            roles.add(role);
+        }
+        usuario.setRoles(roles);
+
+        usuarioService.guardarUsuario(usuario);
+        return "redirect:/usuarios?success=updated";
+    }
+
+    // Eliminar usuario (solo ADMIN)
+    @PostMapping("/eliminar/{id}")
+    public String eliminarUsuario(@PathVariable Long id, Model model) {
+        Usuario usuario = usuarioService.obtenerUsuarioPorId(id).orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+        // Verificar si el usuario tiene el rol de ADMIN
+        boolean esAdmin = usuario.getRoles().stream().anyMatch(role -> role.getName().equals("ADMIN"));
+
+        // Verificar que no sea el último admin
+        if (esAdmin) {
+            List<Usuario> administradores = usuarioService.obtenerUsuariosPorRol("ADMIN");
+            if (administradores.size() == 1) {
+                model.addAttribute("error", "No puedes eliminar el único administrador.");
+                return "usuarios"; // Regresar a la lista de usuarios con el error
+            }
+        }
+
+        usuarioService.eliminarUsuarioPorId(id);
+        return "redirect:/usuarios?success=deleted";
+    }
 }
+
+
 
 
 

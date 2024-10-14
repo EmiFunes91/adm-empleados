@@ -18,19 +18,24 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav ms-auto">
-        <!-- Solo mostrar Empleados y Cajeros a los roles autorizados -->
+        <!-- Mostrar "Empleados" y "Cajeros" solo a ADMIN y USER -->
         <li class="nav-item" sec:authorize="hasAnyRole('ADMIN', 'USER')">
           <a class="nav-link" th:href="@{/empleados}">Empleados</a>
         </li>
         <li class="nav-item" sec:authorize="hasAnyRole('ADMIN', 'USER')">
           <a class="nav-link" th:href="@{/cajeros}">Cajeros</a>
         </li>
-        <li class="nav-item" sec:authorize="hasAnyRole('USER')">
-          <a class="nav-link" th:href="@{/productos}">Productos</a>
-        </li>
-        <li class="nav-item" sec:authorize="hasAnyRole('ADMIN')">
+
+        <!-- Mostrar "Usuarios" solo a ADMIN -->
+        <li class="nav-item" sec:authorize="hasRole('ADMIN')">
           <a class="nav-link" th:href="@{/usuarios}">Usuarios</a>
         </li>
+
+        <!-- Mostrar "Productos" a EMPLEADO y USER -->
+        <li class="nav-item" sec:authorize="hasAnyRole('EMPLEADO', 'USER')">
+          <a class="nav-link" th:href="@{/productos}">Productos</a>
+        </li>
+
         <li class="nav-item">
           <a class="nav-link btn btn-danger text-white" th:href="@{/logout}">Cerrar Sesión</a>
         </li>
@@ -74,7 +79,7 @@
     </div>
 
     <!-- Gestión de Usuarios: Solo visible para ADMIN -->
-    <div sec:authorize="hasAnyRole('ADMIN')" class="col-md-6 mb-4">
+    <div sec:authorize="hasRole('ADMIN')" class="col-md-6 mb-4">
       <div class="card shadow-sm">
         <div class="card-body text-center">
           <h5 class="card-title">Gestión de Usuarios</h5>
@@ -84,7 +89,7 @@
       </div>
     </div>
 
-    <!-- Gestión de Productos: Solo visible para ADMIN, EMPLEADO y USER -->
+    <!-- Gestión de Productos: Solo visible para EMPLEADO y USER -->
     <div sec:authorize="hasAnyRole('EMPLEADO', 'USER')" class="col-md-6 mb-4">
       <div class="card shadow-sm">
         <div class="card-body text-center">
@@ -101,6 +106,7 @@
 <script src="js/darkMode.js"></script>
 </body>
 </html>
+
 
 
 

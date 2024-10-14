@@ -9,8 +9,15 @@ public interface UsuarioService {
     List<Usuario> obtenerTodosLosUsuarios();
     boolean existePorEmail(String email);
     boolean existePorUsername(String username);
-    Optional<Usuario> buscarPorUsername(String username);  // Cambiado a Optional<Usuario>
+    Optional<Usuario> buscarPorUsername(String username);
+    Optional<Usuario> obtenerUsuarioPorId(Long id);
+    void eliminarUsuarioPorId(Long id);
+
+    // Nuevo método para obtener usuarios por rol
+    List<Usuario> obtenerUsuariosPorRol(String rolName);
 }
+
+
 
 
 

@@ -46,7 +46,7 @@ public class UsuarioController {
     public String mostrarFormularioDeRegistro(Model model) {
         model.addAttribute("usuarioDTO", new UsuarioDTO());
 
-        // Obtener todos los roles (ADMIN, USER), si no están en la base de datos, los añadimos aquí
+        // Obtener todos los roles (ADMIN, USER)
         List<Role> rolesDisponibles = roleService.obtenerTodosLosRoles();
         model.addAttribute("roles", rolesDisponibles);
         return "registro";
@@ -73,14 +73,10 @@ public class UsuarioController {
         usuario.setPassword(passwordEncoder.encode(usuarioDTO.getPassword()));
         usuario.setEmail(usuarioDTO.getEmail());
 
-        Set<Role> roles = new HashSet<>();
+        // Obtener y asignar el rol
         for (String roleName : usuarioDTO.getRoles()) {
-            Role role = roleService.buscarPorNombre(roleName).orElseThrow(() -> new RuntimeException("Role no encontrado: " + roleName));
-            roles.add(role);
+            usuarioService.guardarUsuario(usuario, roleName);  // Ahora pasa el rol directamente
         }
-        usuario.setRoles(roles);
-
-        usuarioService.guardarUsuario(usuario);
 
         emailService.enviarEmailDeConfirmacion(usuario.getEmail(), "¡Bienvenido a nuestra aplicación!",
                 String.format("Hola %s,\n\nGracias por registrarte en nuestra aplicación.", usuario.getUsername()));
@@ -113,14 +109,11 @@ public class UsuarioController {
         usuario.setUsername(usuarioDTO.getUsername());
         usuario.setEmail(usuarioDTO.getEmail());
 
-        Set<Role> roles = new HashSet<>();
+        // Actualizar roles
         for (String roleName : usuarioDTO.getRoles()) {
-            Role role = roleService.buscarPorNombre(roleName).orElseThrow(() -> new RuntimeException("Role no encontrado: " + roleName));
-            roles.add(role);
+            usuarioService.guardarUsuario(usuario, roleName);  // Actualizar con el nuevo método
         }
-        usuario.setRoles(roles);
 
-        usuarioService.guardarUsuario(usuario);
         return "redirect:/usuarios?success=updated";
     }
 
@@ -145,6 +138,7 @@ public class UsuarioController {
         return "redirect:/usuarios?success=deleted";
     }
 }
+
 
 
 

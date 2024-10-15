@@ -1,19 +1,18 @@
 package com.api.adm.controllers;
 
+import com.api.adm.dto.CajeroDTO;
 import com.api.adm.entity.Cajero;
+import com.api.adm.entity.Empleado;
 import com.api.adm.service.CajeroService;
 import com.api.adm.service.DtoConverterService;
 import com.api.adm.service.EmpleadoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import com.api.adm.dto.CajeroDTO;
-import com.api.adm.entity.Empleado;
-import java.util.stream.Collectors;
-
-
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/cajeros")
@@ -29,6 +28,7 @@ public class CajeroController {
     private DtoConverterService dtoConverterService;
 
     @GetMapping
+    @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
     public List<CajeroDTO> obtenerCajeros() {
         return cajeroService.obtenerTodosLosCajeros().stream()
                 .map(dtoConverterService::convertirACajeroDTO)
@@ -36,6 +36,7 @@ public class CajeroController {
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public CajeroDTO crearCajero(@RequestBody CajeroDTO cajeroDTO) {
         Empleado empleado = empleadoService.obtenerEmpleadoPorId(cajeroDTO.getEmpleadoId());
         Cajero cajero = dtoConverterService.convertirACajero(cajeroDTO, empleado);
@@ -44,20 +45,27 @@ public class CajeroController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Cajero> obtenerCajeroPorId(@PathVariable Long id) {
+    @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
+    public ResponseEntity<CajeroDTO> obtenerCajeroPorId(@PathVariable Long id) {
         Cajero cajero = cajeroService.obtenerCajeroPorId(id);
-        return ResponseEntity.ok(cajero);
+        CajeroDTO cajeroDTO = dtoConverterService.convertirACajeroDTO(cajero);
+        return ResponseEntity.ok(cajeroDTO);
     }
 
     @PutMapping("/{id}")
-    public Cajero actualizarCajero(@PathVariable Long id, @RequestBody Cajero cajero) {
-        return cajeroService.actualizarCajero(id, cajero);
+    @PreAuthorize("hasRole('ADMIN')")
+    public CajeroDTO actualizarCajero(@PathVariable Long id, @RequestBody CajeroDTO cajeroDTO) {
+        Empleado empleado = empleadoService.obtenerEmpleadoPorId(cajeroDTO.getEmpleadoId());
+        Cajero cajero = dtoConverterService.convertirACajero(cajeroDTO, empleado);
+        Cajero cajeroActualizado = cajeroService.actualizarCajero(id, cajero);
+        return dtoConverterService.convertirACajeroDTO(cajeroActualizado);
     }
 
-
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> eliminarCajero(@PathVariable Long id) {
         cajeroService.eliminarCajero(id);
         return ResponseEntity.noContent().build();
     }
 }
+

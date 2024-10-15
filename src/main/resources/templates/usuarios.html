@@ -15,6 +15,7 @@
         </div>
         <div class="card-body">
 
+            <!-- Mensajes de éxito -->
             <div th:if="${param.success == 'created'}" class="alert alert-success">
                 Usuario creado exitosamente.
             </div>
@@ -25,17 +26,20 @@
                 Usuario eliminado exitosamente.
             </div>
 
+            <!-- Acciones principales -->
             <div class="mb-3 text-end">
                 <a class="btn btn-success" th:href="@{/usuarios/registro}">Registrar Nuevo Usuario</a>
                 <a class="btn btn-info" th:href="@{/dashboard}">Panel de Control</a>
                 <a class="btn btn-danger" th:href="@{/logout}">Cerrar Sesión</a>
             </div>
 
+            <!-- Barra de búsqueda -->
             <form th:action="@{/usuarios}" method="get" class="d-flex mb-3">
                 <input type="text" name="query" class="form-control me-2" th:value="${query}" placeholder="Buscar por nombre o email">
                 <button type="submit" class="btn btn-primary">Buscar</button>
             </form>
 
+            <!-- Tabla de usuarios -->
             <table class="table table-hover table-bordered">
                 <thead class="table-primary">
                 <tr>

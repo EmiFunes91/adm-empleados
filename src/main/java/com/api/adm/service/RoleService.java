@@ -8,7 +8,8 @@ public interface RoleService {
     Optional<Role> buscarPorNombre(String nombre);  // Buscar un rol por nombre
     List<Role> obtenerTodosLosRoles();              // Obtener todos los roles
     Role guardar(Role role);                        // Guardar un rol
-    Role merge(Role role);                          // Actualizar un rol (merge)
+    Role merge(Role role);
+    void inicializarRoles();// Actualizar un rol (merge)
 }
 
 

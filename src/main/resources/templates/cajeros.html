@@ -30,38 +30,44 @@
         <a class="btn btn-info" th:href="@{/dashboard}">Panel de Control</a>
         <a class="btn btn-danger" th:href="@{/logout}">Cerrar Sesión</a>
       </div>
+
       <!-- Barra de búsqueda -->
       <form th:action="@{/cajeros}" method="get" class="d-flex mb-3">
-          <input type="text" name="query" class="form-control me-2" th:value="${query}" placeholder="Buscar por nombre o apellido">
+        <input type="text" name="query" class="form-control me-2" th:value="${query}" placeholder="Buscar por nombre o apellido" aria-label="Buscar">
         <button type="submit" class="btn btn-primary">Buscar</button>
       </form>
-      <table class="table table-hover table-bordered">
-        <thead class="table-primary">
-        <tr>
-          <th>ID Empleado</th>
-          <th>Usuario</th>
-          <th>Nombre</th>
-          <th>Apellido</th>
-          <th>Permisos</th>
-          <th>Acciones</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="cajero : ${cajeros}">
-          <td th:text="${cajero.empleado != null ? cajero.empleado.id : 'Sin asignar'}">ID Empleado</td>
-          <td th:text="${cajero.username}">Usuario</td>
-          <td th:text="${cajero.empleado != null ? cajero.empleado.nombre : 'Sin asignar'}">Nombre</td>
-          <td th:text="${cajero.empleado != null ? cajero.empleado.apellido : 'Sin asignar'}">Apellido</td>
-          <td th:text="${cajero.permisos}">Permisos</td>
-          <td>
-            <a class="btn btn-primary btn-sm me-1" th:href="@{/cajeros/editar/{id}(id=${cajero.id})}">Editar</a>
-            <form th:action="@{/cajeros/eliminar/{id}(id=${cajero.id})}" method="post" style="display: inline;" onsubmit="return confirm('¿Estás seguro de que deseas eliminar este cajero?')">
-              <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
-            </form>
-          </td>
-        </tr>
-        </tbody>
-      </table>
+
+
+      <!-- Tabla de Cajeros -->
+      <div class="table-responsive">
+        <table class="table table-hover table-bordered">
+          <thead class="table-primary">
+          <tr>
+            <th>ID Empleado</th>
+            <th>Usuario</th>
+            <th>Nombre</th>
+            <th>Apellido</th>
+            <th>Permisos</th>
+            <th>Acciones</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr th:each="cajero : ${cajeros}">
+            <td th:text="${cajero.empleado != null ? cajero.empleado.id : 'Sin asignar'}">ID Empleado</td>
+            <td th:text="${cajero.username}">Usuario</td>
+            <td th:text="${cajero.empleado != null ? cajero.empleado.nombre : 'Sin asignar'}">Nombre</td>
+            <td th:text="${cajero.empleado != null ? cajero.empleado.apellido : 'Sin asignar'}">Apellido</td>
+            <td th:text="${cajero.permisos}">Permisos</td>
+            <td>
+              <a class="btn btn-primary btn-sm me-1" th:href="@{/cajeros/editar/{id}(id=${cajero.id})}">Editar</a>
+              <form th:action="@{/cajeros/eliminar/{id}(id=${cajero.id})}" method="post" style="display: inline;" onsubmit="return confirm('¿Estás seguro de que deseas eliminar este cajero?')">
+                <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
+              </form>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
   </div>
 </div>

@@ -15,6 +15,7 @@
         </div>
         <div class="card-body">
 
+            <!-- Mensajes de éxito -->
             <div th:if="${param.success == 'created'}" class="alert alert-success">
                 Empleado creado exitosamente.
             </div>
@@ -25,17 +26,21 @@
                 Empleado eliminado exitosamente.
             </div>
 
+            <!-- Acciones principales -->
             <div class="mb-3 text-end">
-                <a class="btn btn-success" th:href="@{/empleados/nuevo}">Agregar Nuevo Empleado</a>
+                <!-- Solo permitir a USER o ADMIN agregar nuevos empleados -->
+                <a class="btn btn-success" th:href="@{/empleados/nuevo}" sec:authorize="hasRole('ADMIN') or hasRole('USER')">Agregar Nuevo Empleado</a>
                 <a class="btn btn-info" th:href="@{/dashboard}">Panel de Control</a>
                 <a class="btn btn-danger" th:href="@{/logout}">Cerrar Sesión</a>
             </div>
+
             <!-- Barra de búsqueda -->
             <form th:action="@{/empleados}" method="get" class="d-flex mb-3">
                 <input type="text" name="query" class="form-control me-2" th:value="${query}" placeholder="Buscar por nombre o apellido">
                 <button type="submit" class="btn btn-primary">Buscar</button>
             </form>
 
+            <!-- Tabla de empleados -->
             <table class="table table-hover table-bordered">
                 <thead class="table-primary">
                 <tr>
@@ -57,8 +62,9 @@
                     <td th:text="${empleado.celular}">Celular</td>
                     <td th:text="${empleado.correo}">Correo</td>
                     <td>
-                        <a class="btn btn-primary btn-sm me-1" th:href="@{/empleados/editar/{id}(id=${empleado.id})}">Editar</a>
-                        <form th:action="@{/empleados/eliminar/{id}(id=${empleado.id})}" method="post" style="display: inline;" onsubmit="return confirm('¿Estás seguro de que deseas eliminar este empleado?')">
+                        <!-- Solo ADMIN puede editar o eliminar -->
+                        <a class="btn btn-primary btn-sm me-1" th:href="@{/empleados/editar/{id}(id=${empleado.id})}" sec:authorize="hasRole('ADMIN')">Editar</a>
+                        <form th:action="@{/empleados/eliminar/{id}(id=${empleado.id})}" method="post" style="display: inline;" sec:authorize="hasRole('ADMIN')" onsubmit="return confirm('¿Estás seguro de que deseas eliminar este empleado?')">
                             <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
                         </form>
                     </td>
@@ -71,6 +77,8 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
+
+
 
 
 

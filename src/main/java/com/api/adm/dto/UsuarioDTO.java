@@ -7,21 +7,31 @@ import java.util.Set;
 
 public class UsuarioDTO {
 
+    private Long id; // Agregar el campo id
+
     @NotBlank(message = "El nombre de usuario es obligatorio")
+    @Size(min = 3, max = 20, message = "El nombre de usuario debe tener entre 3 y 20 caracteres")
     private String username;
 
     @NotBlank(message = "El correo electrónico es obligatorio")
-    @Email(message = "Debe proporcionar un correo electrónico válido")
+    @Email(message = "El correo electrónico no es válido")
     private String email;
 
     @NotBlank(message = "La contraseña es obligatoria")
-    @Size(min = 8, message = "La contraseña debe tener al menos 8 caracteres")
+    @Size(min = 6, message = "La contraseña debe tener al menos 6 caracteres")
     private String password;
 
-    // Soporte para múltiples roles
     private Set<String> roles;
 
     // Getters y Setters
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     public String getUsername() {
         return username;
     }
@@ -54,5 +64,7 @@ public class UsuarioDTO {
         this.roles = roles;
     }
 }
+
+
 
 

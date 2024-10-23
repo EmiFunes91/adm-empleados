@@ -10,29 +10,23 @@
 <div class="card shadow-sm p-4" style="max-width: 500px; width: 100%;">
   <h2 class="text-center mb-4">Asignar Rol de Cajero</h2>
 
-  <!-- Mensaje de error si hay algún problema en el envío del formulario -->
   <div th:if="${#fields.hasErrors()}" class="alert alert-danger">
     Por favor, corrige los errores en el formulario.
   </div>
 
-  <!-- Formulario -->
   <form th:action="@{/cajeros/guardar}" th:object="${cajero}" method="post" novalidate>
 
-    <!-- Empleado -->
     <div class="mb-3">
       <label for="empleado" class="form-label">Seleccionar Empleado:</label>
-      <select id="empleado" th:field="*{empleado}" class="form-select" required>
+      <select id="empleado" th:field="*{empleado.id}" class="form-select" required>
         <option value="" disabled selected>Selecciona un empleado</option>
-        <option th:each="empleado : ${empleados}" th:value="${empleado.id}" th:text="${empleado.nombre + ' ' + empleado.apellido}">
-          Selecciona un empleado
-        </option>
+        <option th:each="empleado : ${empleados}" th:value="${empleado.id}" th:text="${empleado.nombre + ' ' + empleado.apellido}"></option>
       </select>
-      <div th:if="${#fields.hasErrors('empleado')}" class="text-danger">
-        <small th:errors="*{empleado}"></small>
+      <div th:if="${#fields.hasErrors('empleado.id')}" class="text-danger">
+        <small th:errors="*{empleado.id}"></small>
       </div>
     </div>
 
-    <!-- Usuario -->
     <div class="mb-3">
       <label for="username" class="form-label">Usuario:</label>
       <input type="text" id="username" th:field="*{username}" class="form-control" placeholder="Ingresa el nombre de usuario" required>
@@ -41,7 +35,6 @@
       </div>
     </div>
 
-    <!-- Contraseña -->
     <div class="mb-3">
       <label for="password" class="form-label">Contraseña:</label>
       <input type="password" id="password" th:field="*{password}" class="form-control" placeholder="Ingresa la contraseña" required>
@@ -50,25 +43,38 @@
       </div>
     </div>
 
-    <!-- Permisos -->
     <div class="mb-3">
       <label for="permisos" class="form-label">Permisos:</label>
-      <input type="number" id="permisos" th:field="*{permisos}" class="form-control" placeholder="1 para básico, 2 para intermedio, 3 para avanzado" required min="1" max="3">
+      <input type="number" id="permisos" th:field="*{permisos}" class="form-control" placeholder="1 a 3" required min="1" max="3">
       <div th:if="${#fields.hasErrors('permisos')}" class="text-danger">
         <small th:errors="*{permisos}"></small>
       </div>
     </div>
 
-    <!-- Botones de acción -->
     <div class="d-grid">
       <button type="submit" class="btn btn-primary">Asignar Rol de Cajero</button>
-      <a href="/cajeros" class="btn btn-secondary mt-2">Cancelar</a>
+      <div class="d-flex justify-content-between mt-2">
+        <a href="/cajeros" class="btn btn-secondary">Volver a la Lista de Cajeros</a>
+        <a href="/dashboard" class="btn btn-info">Volver al Panel de Control</a>
+      </div>
     </div>
-
   </form>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
+
 

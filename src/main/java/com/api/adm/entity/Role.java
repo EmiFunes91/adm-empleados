@@ -1,6 +1,8 @@
 package com.api.adm.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+
 import java.util.HashSet;
 import java.util.Set;
 
@@ -11,6 +13,7 @@ public class Role {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotBlank(message = "El nombre del rol es obligatorio") // Agregar validación aquí si se desea
     private String name;
 
     @ManyToMany(mappedBy = "roles")
@@ -50,4 +53,5 @@ public class Role {
         this.usuarios = usuarios;
     }
 }
+
 

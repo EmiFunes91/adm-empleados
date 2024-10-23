@@ -8,7 +8,6 @@ import com.api.adm.service.DtoConverterService;
 import com.api.adm.service.EmpleadoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -28,7 +27,6 @@ public class CajeroController {
     private DtoConverterService dtoConverterService;
 
     @GetMapping
-    @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
     public List<CajeroDTO> obtenerCajeros() {
         return cajeroService.obtenerTodosLosCajeros().stream()
                 .map(dtoConverterService::convertirACajeroDTO)
@@ -36,16 +34,20 @@ public class CajeroController {
     }
 
     @PostMapping
-    @PreAuthorize("hasRole('ADMIN')")
     public CajeroDTO crearCajero(@RequestBody CajeroDTO cajeroDTO) {
+        // Verifica que el empleado exista antes de asignarlo
         Empleado empleado = empleadoService.obtenerEmpleadoPorId(cajeroDTO.getEmpleadoId());
+        if (empleado == null) {
+            throw new RuntimeException("Empleado no encontrado");
+        }
+
         Cajero cajero = dtoConverterService.convertirACajero(cajeroDTO, empleado);
         cajero = cajeroService.guardarCajero(cajero);
         return dtoConverterService.convertirACajeroDTO(cajero);
     }
 
+
     @GetMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
     public ResponseEntity<CajeroDTO> obtenerCajeroPorId(@PathVariable Long id) {
         Cajero cajero = cajeroService.obtenerCajeroPorId(id);
         CajeroDTO cajeroDTO = dtoConverterService.convertirACajeroDTO(cajero);
@@ -53,7 +55,6 @@ public class CajeroController {
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
     public CajeroDTO actualizarCajero(@PathVariable Long id, @RequestBody CajeroDTO cajeroDTO) {
         Empleado empleado = empleadoService.obtenerEmpleadoPorId(cajeroDTO.getEmpleadoId());
         Cajero cajero = dtoConverterService.convertirACajero(cajeroDTO, empleado);
@@ -62,10 +63,13 @@ public class CajeroController {
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> eliminarCajero(@PathVariable Long id) {
         cajeroService.eliminarCajero(id);
         return ResponseEntity.noContent().build();
     }
 }
+
+
+
+
 

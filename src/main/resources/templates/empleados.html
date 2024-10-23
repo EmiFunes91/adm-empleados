@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml" lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -36,7 +36,7 @@
 
             <!-- Barra de búsqueda -->
             <form th:action="@{/empleados}" method="get" class="d-flex mb-3">
-                <input type="text" name="query" class="form-control me-2" th:value="${query}" placeholder="Buscar por nombre o apellido">
+                <input type="text" name="query" class="form-control me-2" th:value="${query}" placeholder="Buscar por nombre o email">
                 <button type="submit" class="btn btn-primary">Buscar</button>
             </form>
 

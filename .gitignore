@@ -32,5 +32,6 @@ build/
 ### VS Code ###
 .vscode/
 
-spring.datasource.password=36River449millo.
-spring.mail.password=tacp rzts fcom peqh
+# Ignorar archivos de configuración sensibles
+application.properties
+application.yml

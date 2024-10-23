@@ -23,28 +23,19 @@ public class UsuarioServiceImpl implements UsuarioService {
     private UsuarioRepository usuarioRepository;
 
     @Autowired
-    private RoleRepository roleRepository;  // Inyección de RoleRepository
+    private RoleRepository roleRepository;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    public UsuarioServiceImpl(UsuarioRepository usuarioRepository, RoleRepository roleRepository) {
-        this.usuarioRepository = usuarioRepository;
-        this.roleRepository = roleRepository;
-    }
-
     @Override
     @Transactional
-    public Usuario guardarUsuario(Usuario usuario, String roleName) {
-        // Buscar el rol en la base de datos por su nombre
+    public void guardarUsuario(Usuario usuario, String roleName) {
         Role role = roleRepository.findByName(roleName)
                 .orElseThrow(() -> new RuntimeException("Rol no encontrado"));
 
-        // Asignar el rol existente al usuario
         usuario.getRoles().add(role);
-
-        // Guardar el usuario con el rol ya existente
-        return usuarioRepository.save(usuario);
+        usuarioRepository.save(usuario);
     }
 
     @Override
@@ -84,12 +75,23 @@ public class UsuarioServiceImpl implements UsuarioService {
 
     @Transactional
     @Override
-    public void registrarUsuario(UsuarioDTO usuarioDTO) {
+    public Usuario registrarUsuario(UsuarioDTO usuarioDTO) {
+        // Validar que el correo electrónico y el nombre de usuario no existan
+        if (existePorEmail(usuarioDTO.getEmail())) {
+            throw new RuntimeException("El correo electrónico ya está en uso.");
+        }
+
+        if (existePorUsername(usuarioDTO.getUsername())) {
+            throw new RuntimeException("El nombre de usuario ya está en uso.");
+        }
+
+        // Crear nuevo usuario
         Usuario usuario = new Usuario();
         usuario.setUsername(usuarioDTO.getUsername());
         usuario.setPassword(passwordEncoder.encode(usuarioDTO.getPassword()));
         usuario.setEmail(usuarioDTO.getEmail());
 
+        // Asignar roles
         Set<Role> roles = new HashSet<>();
         for (String roleName : usuarioDTO.getRoles()) {
             Role role = roleRepository.findByName(roleName)
@@ -98,18 +100,18 @@ public class UsuarioServiceImpl implements UsuarioService {
         }
         usuario.setRoles(roles);
 
-        usuarioRepository.save(usuario);
+        return usuarioRepository.save(usuario); // Retornar el usuario guardado
     }
 
     @Override
-    public void actualizarUsuario(Long id, UsuarioDTO usuarioDTO) {
+    public Usuario actualizarUsuario(Long id, UsuarioDTO usuarioDTO) {
         Usuario usuario = usuarioRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
         usuario.setUsername(usuarioDTO.getUsername());
         usuario.setEmail(usuarioDTO.getEmail());
 
-        // Si se necesita actualizar la contraseña
+        // Actualizar la contraseña solo si se proporciona una nueva
         if (usuarioDTO.getPassword() != null && !usuarioDTO.getPassword().isEmpty()) {
             usuario.setPassword(passwordEncoder.encode(usuarioDTO.getPassword()));
         }
@@ -123,9 +125,12 @@ public class UsuarioServiceImpl implements UsuarioService {
         }
         usuario.setRoles(roles);
 
-        usuarioRepository.save(usuario);
+        return usuarioRepository.save(usuario); // Retornar el usuario actualizado
     }
 }
+
+
+
 
 
 

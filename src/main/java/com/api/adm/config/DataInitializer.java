@@ -11,6 +11,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.boot.CommandLineRunner;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Component
 public class DataInitializer implements CommandLineRunner {
 
@@ -43,6 +46,12 @@ public class DataInitializer implements CommandLineRunner {
             admin.setUsername("admin");
             admin.setPassword(passwordEncoder.encode(adminPassword));
             admin.setEmail("admin@ejemplo.com");
+
+            Set<Role> roles = new HashSet<>();
+            Role adminRole = roleService.buscarPorNombre("ADMIN")
+                    .orElseThrow(() -> new RuntimeException("Rol ADMIN no encontrado"));
+            roles.add(adminRole);
+            admin.setRoles(roles);
 
             // Guardar usuario con el rol ADMIN
             usuarioService.guardarUsuario(admin, "ADMIN");

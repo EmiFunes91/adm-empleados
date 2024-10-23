@@ -12,16 +12,16 @@ import java.util.List;
 @Service
 public class EmpleadoServiceImpl implements EmpleadoService {
 
-    private final EmpleadoRepository empleadoRepository;
-
     @Autowired
-    public EmpleadoServiceImpl(EmpleadoRepository empleadoRepository) {
-        this.empleadoRepository = empleadoRepository;
-    }
+    private EmpleadoRepository empleadoRepository;
 
     @Override
     public Empleado guardarEmpleado(Empleado empleado) {
-        return empleadoRepository.save(empleado);
+        try {
+            return empleadoRepository.save(empleado);
+        } catch (Exception e) {
+            throw new RuntimeException("Error al guardar el empleado: " + e.getMessage());
+        }
     }
 
     @Override
@@ -57,5 +57,6 @@ public class EmpleadoServiceImpl implements EmpleadoService {
         empleadoRepository.delete(empleado);
     }
 }
+
 
 

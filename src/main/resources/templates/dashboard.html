@@ -1,12 +1,10 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/springsecurity6" lang="es">
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Panel de Control</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link rel="stylesheet" th:href="@{/css/styles.css}">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js" crossorigin="anonymous"></script>
 </head>
 <body id="body">
 <!-- Barra de navegación -->
@@ -18,32 +16,22 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav ms-auto">
-        <!-- Mostrar "Empleados" y "Cajeros" solo a ADMIN y USER -->
-        <li class="nav-item" sec:authorize="hasAnyRole('ADMIN', 'USER')">
+        <li class="nav-item">
           <a class="nav-link" th:href="@{/empleados}">Empleados</a>
         </li>
-        <li class="nav-item" sec:authorize="hasAnyRole('ADMIN', 'USER')">
+        <li class="nav-item">
           <a class="nav-link" th:href="@{/cajeros}">Cajeros</a>
         </li>
-
-        <!-- Mostrar "Usuarios" solo a ADMIN -->
-        <li class="nav-item" sec:authorize="hasRole('ADMIN')">
+        <li class="nav-item">
           <a class="nav-link" th:href="@{/usuarios}">Usuarios</a>
         </li>
-
-        <!-- Mostrar "Productos" a EMPLEADO y USER -->
-        <li class="nav-item" sec:authorize="hasAnyRole('EMPLEADO', 'USER')">
+        <li class="nav-item">
           <a class="nav-link" th:href="@{/productos}">Productos</a>
         </li>
-
         <li class="nav-item">
           <a class="nav-link btn btn-danger text-white" th:href="@{/logout}">Cerrar Sesión</a>
         </li>
       </ul>
-      <!-- Interruptor de Modo Oscuro -->
-      <button class="btn btn-outline-light ms-3" id="darkModeToggle">
-        <i class="fas fa-sun" id="darkModeIcon"></i>
-      </button>
     </div>
   </div>
 </nav>
@@ -56,8 +44,7 @@
   </div>
 
   <div class="row mt-4">
-    <!-- Gestión de Empleados: Solo ADMIN y USER pueden ver esta sección -->
-    <div sec:authorize="hasAnyRole('ADMIN', 'USER')" class="col-md-6 mb-4">
+    <div class="col-md-6 mb-4">
       <div class="card shadow-sm">
         <div class="card-body text-center">
           <h5 class="card-title">Gestión de Empleados</h5>
@@ -67,8 +54,7 @@
       </div>
     </div>
 
-    <!-- Gestión de Cajeros: Solo ADMIN y USER pueden ver esta sección -->
-    <div sec:authorize="hasAnyRole('ADMIN', 'USER')" class="col-md-6 mb-4">
+    <div class="col-md-6 mb-4">
       <div class="card shadow-sm">
         <div class="card-body text-center">
           <h5 class="card-title">Gestión de Cajeros</h5>
@@ -78,8 +64,7 @@
       </div>
     </div>
 
-    <!-- Gestión de Usuarios: Solo visible para ADMIN -->
-    <div sec:authorize="hasRole('ADMIN')" class="col-md-6 mb-4">
+    <div class="col-md-6 mb-4">
       <div class="card shadow-sm">
         <div class="card-body text-center">
           <h5 class="card-title">Gestión de Usuarios</h5>
@@ -89,8 +74,7 @@
       </div>
     </div>
 
-    <!-- Gestión de Productos: Solo visible para EMPLEADO y USER -->
-    <div sec:authorize="hasAnyRole('EMPLEADO', 'USER')" class="col-md-6 mb-4">
+    <div class="col-md-6 mb-4">
       <div class="card shadow-sm">
         <div class="card-body text-center">
           <h5 class="card-title">Gestión de Productos</h5>
@@ -103,7 +87,6 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-<script src="js/darkMode.js"></script>
 </body>
 </html>
 

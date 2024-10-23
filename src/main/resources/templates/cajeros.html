@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Lista de Cajeros</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link rel="stylesheet" th:href="@{/css/styles.css}">
 </head>
 <body class="bg-light">
 <div class="container mt-5">
@@ -33,10 +32,9 @@
 
       <!-- Barra de búsqueda -->
       <form th:action="@{/cajeros}" method="get" class="d-flex mb-3">
-        <input type="text" name="query" class="form-control me-2" th:value="${query}" placeholder="Buscar por nombre o apellido" aria-label="Buscar">
+        <input type="text" name="query" class="form-control me-2" th:value="${query}" placeholder="Buscar por nombre o email">
         <button type="submit" class="btn btn-primary">Buscar</button>
       </form>
-
 
       <!-- Tabla de Cajeros -->
       <div class="table-responsive">
@@ -74,6 +72,7 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
+
 
 
 

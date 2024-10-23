@@ -4,7 +4,7 @@ document.getElementById('loginForm').addEventListener('submit', async function(e
     const password = document.getElementById('password').value;
 
     try {
-        const response = await fetch('/auth/login', {
+        const response = await fetch('/auth/api/login', {  // URL para la API JWT
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -14,9 +14,10 @@ document.getElementById('loginForm').addEventListener('submit', async function(e
 
         if (response.ok) {
             const data = await response.json();
-            localStorage.setItem('jwtToken', data.jwt);
+            localStorage.setItem('jwtToken', data.jwt); // Guardar el token en localStorage
             window.location.href = '/dashboard';  // Redirige a la página del dashboard
-        } else {
+        } else if (response.status === 401) {
+            // Mostrar mensaje de error si las credenciales son incorrectas
             document.getElementById('error-message').classList.remove('d-none');
         }
     } catch (error) {
@@ -24,5 +25,6 @@ document.getElementById('loginForm').addEventListener('submit', async function(e
         document.getElementById('error-message').classList.remove('d-none');
     }
 });
+
 
 

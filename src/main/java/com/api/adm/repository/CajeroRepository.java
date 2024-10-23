@@ -10,3 +10,5 @@ import java.util.List;
 public interface CajeroRepository extends JpaRepository<Cajero, Long> {
     List<Cajero> findByEmpleadoNombreContainingIgnoreCaseOrEmpleadoApellidoContainingIgnoreCase(String nombre, String apellido);
 }
+
+

@@ -21,7 +21,6 @@ public class CajeroServiceImpl implements CajeroService {
 
     @Override
     public Cajero guardarCajero(Cajero cajero) {
-        // Encripta la contraseña antes de guardar el cajero
         if (cajero.getPassword() != null && !cajero.getPassword().isEmpty()) {
             cajero.setPassword(passwordEncoder.encode(cajero.getPassword()));
         }
@@ -35,7 +34,6 @@ public class CajeroServiceImpl implements CajeroService {
 
     @Override
     public List<Cajero> buscarCajeros(String query) {
-        // Utiliza el método del repositorio para buscar por nombre o apellido del empleado
         return cajeroRepository.findByEmpleadoNombreContainingIgnoreCaseOrEmpleadoApellidoContainingIgnoreCase(query, query);
     }
 
@@ -48,12 +46,10 @@ public class CajeroServiceImpl implements CajeroService {
     @Override
     public Cajero actualizarCajero(Long id, Cajero cajeroDetalles) {
         Cajero cajero = obtenerCajeroPorId(id);
-
         cajero.setUsername(cajeroDetalles.getUsername());
         cajero.setPermisos(cajeroDetalles.getPermisos());
         cajero.setEmpleado(cajeroDetalles.getEmpleado());
 
-        // Encripta la contraseña solo si ha sido proporcionada
         if (cajeroDetalles.getPassword() != null && !cajeroDetalles.getPassword().isEmpty()) {
             cajero.setPassword(passwordEncoder.encode(cajeroDetalles.getPassword()));
         }
@@ -67,6 +63,13 @@ public class CajeroServiceImpl implements CajeroService {
         cajeroRepository.delete(cajero);
     }
 }
+
+
+
+
+
+
+
 
 
 

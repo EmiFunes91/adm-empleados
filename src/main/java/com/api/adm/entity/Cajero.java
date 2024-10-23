@@ -19,6 +19,7 @@ public class Cajero {
     @Column
     private int permisos;
 
+    // Getters y Setters
 
     public Long getId() {
         return id;
@@ -26,6 +27,14 @@ public class Cajero {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Empleado getEmpleado() {
+        return empleado;
+    }
+
+    public void setEmpleado(Empleado empleado) {
+        this.empleado = empleado;
     }
 
     public String getUsername() {
@@ -51,12 +60,6 @@ public class Cajero {
     public void setPermisos(int permisos) {
         this.permisos = permisos;
     }
-
-    public Empleado getEmpleado() {
-        return empleado;
-    }
-
-    public void setEmpleado(Empleado empleado) {
-        this.empleado = empleado;
-    }
 }
+
+

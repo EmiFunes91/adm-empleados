@@ -2,15 +2,15 @@ package com.api.adm.service;
 
 import com.api.adm.dto.ProductoDTO;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.stereotype.Service;
 import com.api.adm.entity.Producto;
 import com.api.adm.repository.ProductoRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
+import jakarta.validation.Valid;
 import java.util.List;
-
 
 @Service
 public class ProductoService {
@@ -21,11 +21,15 @@ public class ProductoService {
     @Autowired
     private ModelMapper modelMapper;  // Inyectamos ModelMapper
 
+    public List<Producto> buscarProductos(String query) {
+        return productoRepository.findByNombreContainingIgnoreCaseOrCategoriaContainingIgnoreCase(query, query);
+    }
+
     public List<Producto> obtenerTodosLosProductos() {
         return productoRepository.findAll();
     }
 
-    public Producto guardarProducto(Producto producto) {
+    public Producto guardarProducto(@Valid Producto producto) {
         return productoRepository.save(producto);
     }
 
@@ -54,3 +58,5 @@ public class ProductoService {
         return productos.map(producto -> modelMapper.map(producto, ProductoDTO.class));
     }
 }
+
+

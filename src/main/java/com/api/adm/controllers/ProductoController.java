@@ -4,10 +4,10 @@ import com.api.adm.dto.ProductoDTO;
 import com.api.adm.entity.Producto;
 import com.api.adm.service.ProductoService;
 import com.api.adm.service.DtoConverterService;
-import org.springframework.data.domain.Page;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,6 +23,7 @@ public class ProductoController {
     @Autowired
     private DtoConverterService dtoConverterService;
 
+    // Método para obtener todos los productos
     @GetMapping
     @PreAuthorize("hasRole('ADMIN') or hasRole('USER') or hasRole('EMPLEADO')")
     public List<ProductoDTO> obtenerTodosLosProductos() {
@@ -31,13 +32,15 @@ public class ProductoController {
                 .collect(Collectors.toList());
     }
 
-    @GetMapping("/productos")
-    public Page<ProductoDTO> obtenerProductosPaginados(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size) {
-        return productoService.obtenerProductosPaginados(page, size);
+    // Método para mostrar formulario de agregar producto
+    @GetMapping("/nuevo")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
+    public String mostrarFormularioAgregarProducto(Model model) {
+        model.addAttribute("productoDTO", new ProductoDTO());
+        return "agregar_producto"; // Asegúrate de que este nombre coincida con el nombre del archivo de la vista
     }
 
+    // Método para guardar un producto
     @PostMapping
     @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
     public ProductoDTO guardarProducto(@RequestBody ProductoDTO productoDTO) {
@@ -46,6 +49,7 @@ public class ProductoController {
         return dtoConverterService.convertirAProductoDTO(nuevoProducto);
     }
 
+    // Método para obtener un producto por ID
     @GetMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN') or hasRole('USER') or hasRole('EMPLEADO')")
     public ResponseEntity<ProductoDTO> obtenerProductoPorId(@PathVariable Long id) {
@@ -54,6 +58,7 @@ public class ProductoController {
         return ResponseEntity.ok(productoDTO);
     }
 
+    // Método para actualizar un producto
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
     public ProductoDTO actualizarProducto(@PathVariable Long id, @RequestBody ProductoDTO productoDTO) {
@@ -62,6 +67,7 @@ public class ProductoController {
         return dtoConverterService.convertirAProductoDTO(productoActualizado);
     }
 
+    // Método para eliminar un producto
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> eliminarProducto(@PathVariable Long id) {
@@ -69,4 +75,7 @@ public class ProductoController {
         return ResponseEntity.noContent().build();
     }
 }
+
+
+
 

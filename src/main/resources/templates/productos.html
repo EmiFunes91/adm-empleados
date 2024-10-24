@@ -16,15 +16,9 @@
     <div class="card-body">
 
       <!-- Mensajes de éxito -->
-      <div th:if="${param.success == 'created'}" class="alert alert-success">
-        Producto creado exitosamente.
-      </div>
-      <div th:if="${param.success == 'updated'}" class="alert alert-success">
-        Cambios guardados exitosamente.
-      </div>
-      <div th:if="${param.success == 'deleted'}" class="alert alert-success">
-        Producto eliminado exitosamente.
-      </div>
+      <div th:if="${param.success == 'created'}" class="alert alert-success">Producto creado exitosamente.</div>
+      <div th:if="${param.success == 'updated'}" class="alert alert-success">Cambios guardados exitosamente.</div>
+      <div th:if="${param.success == 'deleted'}" class="alert alert-success">Producto eliminado exitosamente.</div>
 
       <!-- Acciones principales -->
       <div class="mb-3 text-end">
@@ -35,7 +29,7 @@
 
       <!-- Barra de búsqueda -->
       <form th:action="@{/productos}" method="get" class="d-flex mb-3">
-        <input type="text" name="query" class="form-control me-2" th:value="${query}" placeholder="Buscar por nombre o categoría">
+        <input type="text" name="query" class="form-control me-2" th:value="${query}" placeholder="Buscar por nombre, categoría o stock">
         <button type="submit" class="btn btn-primary">Buscar</button>
       </form>
 
@@ -74,3 +68,4 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
+

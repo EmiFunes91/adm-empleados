@@ -5,13 +5,13 @@ import com.api.adm.entity.Role;
 import com.api.adm.entity.Usuario;
 import com.api.adm.service.RoleService;
 import com.api.adm.service.UsuarioService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import jakarta.validation.Valid;
 import java.util.List;
 
 @Controller
@@ -25,8 +25,15 @@ public class UsuarioViewController {
     private RoleService roleService;
 
     @GetMapping
-    public String listarUsuarios(Model model) {
-        model.addAttribute("usuarios", usuarioService.obtenerTodosLosUsuarios());
+    public String listarUsuarios(@RequestParam(value = "query", required = false) String query, Model model) {
+        List<Usuario> usuarios;
+        if (query != null && !query.isEmpty()) {
+            usuarios = usuarioService.buscarUsuarios(query);
+        } else {
+            usuarios = usuarioService.obtenerTodosLosUsuarios();
+        }
+        model.addAttribute("usuarios", usuarios);
+        model.addAttribute("query", query);
         return "usuarios"; // Nombre de la vista
     }
 
@@ -54,15 +61,16 @@ public class UsuarioViewController {
             return "registro";
         }
 
-        usuarioService.registrarUsuario(usuarioDTO); // Asegúrate de que este método esté correctamente implementado
+        usuarioService.registrarUsuario(usuarioDTO);
         return "redirect:/usuarios?success=created";
     }
 
     @GetMapping("/editar/{id}")
     public String editarUsuario(@PathVariable Long id, Model model) {
-        Usuario usuario = usuarioService.obtenerUsuarioPorId(id).orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+        Usuario usuario = usuarioService.obtenerUsuarioPorId(id)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
         UsuarioDTO usuarioDTO = new UsuarioDTO();
-        usuarioDTO.setId(usuario.getId()); // Agregar ID
+        usuarioDTO.setId(usuario.getId());
         usuarioDTO.setUsername(usuario.getUsername());
         usuarioDTO.setEmail(usuario.getEmail());
         model.addAttribute("usuarioDTO", usuarioDTO);
@@ -77,7 +85,7 @@ public class UsuarioViewController {
             return "editarUsuario";
         }
 
-        usuarioService.actualizarUsuario(id, usuarioDTO); // Asegúrate de que este método esté correctamente implementado
+        usuarioService.actualizarUsuario(id, usuarioDTO);
         return "redirect:/usuarios?success=updated";
     }
 
@@ -87,6 +95,7 @@ public class UsuarioViewController {
         return "redirect:/usuarios?success=deleted";
     }
 }
+
 
 
 

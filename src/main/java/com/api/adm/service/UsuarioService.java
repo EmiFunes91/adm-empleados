@@ -11,13 +11,14 @@ public interface UsuarioService {
     List<Usuario> obtenerTodosLosUsuarios();
     boolean existePorEmail(String email);
     boolean existePorUsername(String username);
-    Optional<Usuario> buscarPorUsername(String username);
+    List<Usuario> buscarUsuarios(String query);
     Optional<Usuario> obtenerUsuarioPorId(Long id);
     void eliminarUsuarioPorId(Long id);
     List<Usuario> obtenerUsuariosPorRol(String rolName);
-    Usuario registrarUsuario(UsuarioDTO usuarioDTO); // Cambié a devolver Usuario
-    Usuario actualizarUsuario(Long id, UsuarioDTO usuarioDTO); // Cambié a devolver Usuario
+    Usuario registrarUsuario(UsuarioDTO usuarioDTO);
+    Usuario actualizarUsuario(Long id, UsuarioDTO usuarioDTO);
 }
+
 
 
 

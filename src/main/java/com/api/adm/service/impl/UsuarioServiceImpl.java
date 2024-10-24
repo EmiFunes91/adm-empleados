@@ -54,8 +54,8 @@ public class UsuarioServiceImpl implements UsuarioService {
     }
 
     @Override
-    public Optional<Usuario> buscarPorUsername(String username) {
-        return usuarioRepository.findByUsername(username);
+    public List<Usuario> buscarUsuarios(String query) {
+        return usuarioRepository.findByUsernameContainingIgnoreCaseOrEmailContainingIgnoreCase(query, query);
     }
 
     @Override
@@ -128,6 +128,7 @@ public class UsuarioServiceImpl implements UsuarioService {
         return usuarioRepository.save(usuario); // Retornar el usuario actualizado
     }
 }
+
 
 
 

@@ -36,10 +36,10 @@ public class CajeroViewController {
     }
 
     @GetMapping("/asignar")
-    public String mostrarFormularioAsignarCajero(Model model) {
-        model.addAttribute("empleados", empleadoService.obtenerTodosLosEmpleados());
+    public String mostrarFormularioAsignar(Model model) {
         model.addAttribute("cajero", new Cajero());
-        return "asignar_cajero"; // Vista para asignar rol de cajero
+        model.addAttribute("empleados", empleadoService.obtenerTodosLosEmpleados()); // Asegúrate de pasar los empleados aquí
+        return "asignar_cajero";
     }
 
     @PostMapping("/guardar")
@@ -105,6 +105,7 @@ public class CajeroViewController {
         }
     }
 }
+
 
 
 

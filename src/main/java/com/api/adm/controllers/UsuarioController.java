@@ -22,32 +22,28 @@ public class UsuarioController {
 
     // Lista todos los usuarios
     @GetMapping
-    public List<UsuarioDTO> listarUsuarios() {
-        return usuarioService.obtenerTodosLosUsuarios().stream()
-                .map(usuario -> {
-                    UsuarioDTO dto = new UsuarioDTO();
-                    dto.setId(usuario.getId());
-                    dto.setUsername(usuario.getUsername());
-                    dto.setEmail(usuario.getEmail());
-                    dto.setRoles(usuario.getRoles().stream()
-                            .map(Role::getName)
-                            .collect(Collectors.toSet()));
-                    return dto;
-                })
-                .collect(Collectors.toList());
+    public ResponseEntity<List<UsuarioDTO>> listarUsuarios(@RequestParam(value = "query", required = false) String query) {
+        List<Usuario> usuarios;
+        if (query != null && !query.isEmpty()) {
+            usuarios = usuarioService.buscarUsuarios(query); // Llama al método para buscar usuarios
+        } else {
+            usuarios = usuarioService.obtenerTodosLosUsuarios();
+        }
+        List<UsuarioDTO> usuarioDTOs = usuarios.stream().map(this::convertToDto).collect(Collectors.toList());
+        return ResponseEntity.ok(usuarioDTOs);
     }
 
     // Método para registrar usuario
     @PostMapping
     public ResponseEntity<UsuarioDTO> registrarUsuario(@Valid @RequestBody UsuarioDTO usuarioDTO, BindingResult result) {
         if (result.hasErrors()) {
-            return ResponseEntity.badRequest().body(null); // O maneja errores de manera más detallada
+            return ResponseEntity.badRequest().body(null); // Manejo de errores
         }
         try {
             Usuario usuario = usuarioService.registrarUsuario(usuarioDTO);
             return ResponseEntity.ok(convertToDto(usuario));
         } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(null); // O maneja el error de manera más detallada
+            return ResponseEntity.badRequest().body(null); // Manejo de errores
         }
     }
 
@@ -77,6 +73,8 @@ public class UsuarioController {
         return dto;
     }
 }
+
+
 
 
 

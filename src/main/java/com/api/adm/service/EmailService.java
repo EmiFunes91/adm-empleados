@@ -11,6 +11,7 @@ public class EmailService {
     @Autowired
     private JavaMailSender mailSender;
 
+    // Ahora acepta tres parámetros: destinatario, asunto y mensaje
     public void enviarEmailDeConfirmacion(String destinatario, String asunto, String mensaje) {
         SimpleMailMessage email = new SimpleMailMessage();
         email.setTo(destinatario);
@@ -19,6 +20,7 @@ public class EmailService {
         mailSender.send(email);
     }
 }
+
 
 
 

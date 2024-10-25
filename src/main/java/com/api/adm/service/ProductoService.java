@@ -19,7 +19,7 @@ public class ProductoService {
     private ProductoRepository productoRepository;
 
     @Autowired
-    private ModelMapper modelMapper;  // Inyectamos ModelMapper
+    private ModelMapper modelMapper;
 
     public List<Producto> buscarProductos(String query) {
         return productoRepository.findByNombreContainingIgnoreCaseOrCategoriaContainingIgnoreCase(query, query);
@@ -52,11 +52,11 @@ public class ProductoService {
                 .orElseThrow(() -> new RuntimeException("Producto no encontrado"));
     }
 
-    // Obtener todos los productos paginados
     public Page<ProductoDTO> obtenerProductosPaginados(int page, int size) {
         Page<Producto> productos = productoRepository.findAll(PageRequest.of(page, size));
         return productos.map(producto -> modelMapper.map(producto, ProductoDTO.class));
     }
 }
+
 
 

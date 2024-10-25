@@ -22,6 +22,9 @@ public class ProductoDTO {
     @Min(value = 0, message = "El stock debe ser mayor o igual a 0")
     private Integer stock;
 
+    // Este campo almacenará la ruta o nombre de la imagen
+    private String imagenUrl;
+
     // Getters y Setters
     public Long getId() {
         return id;
@@ -62,6 +65,16 @@ public class ProductoDTO {
     public void setStock(Integer stock) {
         this.stock = stock;
     }
+
+    public String getImagenUrl() {
+        return imagenUrl;
+    }
+
+    public void setImagenUrl(String imagenUrl) {
+        this.imagenUrl = imagenUrl;
+    }
 }
+
+
 
 

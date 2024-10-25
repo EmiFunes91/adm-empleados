@@ -14,6 +14,7 @@ public class Producto {
     private String categoria;
     private Double precio;
     private Integer stock;
+    private String imagenUrl;
 
     // Getters y Setters
     public Long getId() {
@@ -56,6 +57,14 @@ public class Producto {
         this.stock = stock;
     }
 
+    public String getImagenUrl() {
+        return imagenUrl;
+    }
+
+    public void setImagenUrl(String imagenUrl) {
+        this.imagenUrl = imagenUrl;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -69,5 +78,6 @@ public class Producto {
         return Objects.hash(id);
     }
 }
+
 
 

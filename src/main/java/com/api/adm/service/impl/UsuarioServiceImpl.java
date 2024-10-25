@@ -5,6 +5,7 @@ import com.api.adm.entity.Role;
 import com.api.adm.entity.Usuario;
 import com.api.adm.repository.RoleRepository;
 import com.api.adm.repository.UsuarioRepository;
+import com.api.adm.service.EmailService;
 import com.api.adm.service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -27,6 +28,9 @@ public class UsuarioServiceImpl implements UsuarioService {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private EmailService emailService; // Inyecta el servicio de correo
 
     @Override
     @Transactional
@@ -100,7 +104,24 @@ public class UsuarioServiceImpl implements UsuarioService {
         }
         usuario.setRoles(roles);
 
-        return usuarioRepository.save(usuario); // Retornar el usuario guardado
+        Usuario usuarioGuardado = usuarioRepository.save(usuario); // Guardar el usuario
+
+        // Enviar el correo de bienvenida
+        enviarCorreoDeBienvenida(usuarioGuardado);
+
+        return usuarioGuardado; // Retornar el usuario guardado
+    }
+
+    // Método privado para enviar el correo de bienvenida
+    private void enviarCorreoDeBienvenida(Usuario usuario) {
+        String asunto = "Bienvenido a nuestra plataforma";
+        String mensaje = "Estimado/a " + usuario.getUsername() + ",\n\n" +
+                "Gracias por registrarte en nuestra plataforma. Estamos encantados de tenerte con nosotros.\n\n" +
+                "Si tienes alguna duda o consulta, no dudes en contactarnos a través de este correo.\n\n" +
+                "Atentamente,\n" +
+                "El equipo de soporte";
+
+        emailService.enviarEmailDeConfirmacion(usuario.getEmail(), asunto, mensaje);
     }
 
     @Override
@@ -111,12 +132,10 @@ public class UsuarioServiceImpl implements UsuarioService {
         usuario.setUsername(usuarioDTO.getUsername());
         usuario.setEmail(usuarioDTO.getEmail());
 
-        // Actualizar la contraseña solo si se proporciona una nueva
         if (usuarioDTO.getPassword() != null && !usuarioDTO.getPassword().isEmpty()) {
             usuario.setPassword(passwordEncoder.encode(usuarioDTO.getPassword()));
         }
 
-        // Actualizar roles
         Set<Role> roles = new HashSet<>();
         for (String roleName : usuarioDTO.getRoles()) {
             Role role = roleRepository.findByName(roleName)
@@ -125,9 +144,11 @@ public class UsuarioServiceImpl implements UsuarioService {
         }
         usuario.setRoles(roles);
 
-        return usuarioRepository.save(usuario); // Retornar el usuario actualizado
+        return usuarioRepository.save(usuario);
     }
 }
+
+
 
 
 

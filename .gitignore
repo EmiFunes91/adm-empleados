@@ -35,3 +35,7 @@ build/
 # Ignorar archivos de configuración sensibles
 application.properties
 application.yml
+
+# Ignorar archivo .env para variables de entorno
+.env
+

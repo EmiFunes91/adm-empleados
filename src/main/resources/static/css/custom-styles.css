@@ -1,0 +1,62 @@
+/* Estilo para toda la aplicación con una paleta profesional */
+body {
+    background-color: #f8f9fa; /* Gris claro */
+    color: #004085; /* Azul oscuro */
+}
+
+/* Navbar */
+.navbar {
+    background-color: #004085; /* Azul oscuro */
+}
+
+.navbar .nav-link, .navbar .navbar-brand {
+    color: #ffffff;
+}
+
+/* Botones */
+.btn-primary {
+    background-color: #004085;
+    border-color: #004085;
+}
+
+.btn-success {
+    background-color: #28a745;
+    border-color: #28a745;
+}
+
+.btn-danger {
+    background-color: #dc3545;
+    border-color: #dc3545;
+}
+
+.btn-info {
+    background-color: #17a2b8;
+    border-color: #17a2b8;
+}
+
+/* Encabezados y Cartas */
+.card-header {
+    background-color: #004085;
+    color: #ffffff;
+}
+
+.alert-success {
+    background-color: #28a745;
+    color: #ffffff;
+}
+
+.alert-danger {
+    background-color: #dc3545;
+    color: #ffffff;
+}
+
+.alert-info {
+    background-color: #17a2b8;
+    color: #ffffff;
+}
+
+/* Tablas */
+.table-primary {
+    background-color: #004085;
+    color: #ffffff;
+}

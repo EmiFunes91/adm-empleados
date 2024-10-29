@@ -7,39 +7,72 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" th:href="@{/css/custom-styles.css}">
 </head>
-<body class="bg-dark">
-<div class="container mt-5">
-    <div class="card shadow-lg" style="max-width: 600px; margin: auto;">
-        <div class="card-header text-center bg-light text-dark">
-            <h1 class="h4">Editar Producto</h1>
+<body class="bg-dark text-light">
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container">
+        <a class="navbar-brand" href="#">Admin Panel</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/empleados}">Empleados</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/cajeros}">Cajeros</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/usuarios}">Usuarios</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/productos}">Productos</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link btn btn-danger text-white" th:href="@{/logout}">Cerrar Sesión</a>
+                </li>
+            </ul>
         </div>
+    </div>
+</nav>
+
+<!-- Título principal y subtítulo -->
+<div class="container mt-5">
+    <h1 class="text-center mb-3">Gestión de Productos</h1>
+    <h3 class="text-center text-light mb-4">Formulario para editar el producto</h3>
+</div>
+
+<div class="d-flex justify-content-center align-items-center">
+    <div class="card shadow-sm bg-light p-4" style="max-width: 600px; width: 100%;">
+        <h2 class="card-header text-center mb-4 text-dark">Editar Producto</h2>
         <div class="card-body bg-light">
             <form th:action="@{/productos/actualizar/{id}(id=${productoDTO.id})}" th:object="${productoDTO}" method="post" enctype="multipart/form-data">
 
                 <div class="mb-3">
-                    <label for="nombre" class="form-label text-light">Nombre</label>
+                    <label for="nombre" class="form-label">Nombre</label>
                     <input type="text" th:field="*{nombre}" class="form-control" id="nombre">
                 </div>
 
                 <div class="mb-3">
-                    <label for="categoria" class="form-label text-light">Categoría</label>
+                    <label for="categoria" class="form-label">Categoría</label>
                     <input type="text" th:field="*{categoria}" class="form-control" id="categoria">
                 </div>
 
                 <div class="mb-3">
-                    <label for="precio" class="form-label text-light">Precio</label>
+                    <label for="precio" class="form-label">Precio</label>
                     <input type="number" th:field="*{precio}" class="form-control" id="precio">
                 </div>
 
                 <div class="mb-3">
-                    <label for="stock" class="form-label text-light">Stock</label>
+                    <label for="stock" class="form-label">Stock</label>
                     <input type="number" th:field="*{stock}" class="form-control" id="stock">
                 </div>
 
                 <div class="mb-3">
-                    <label for="imagen" class="form-label text-light">Imagen</label>
+                    <label for="imagen" class="form-label">Imagen</label>
                     <input type="file" class="form-control bg-dark text-light" id="imagen" name="imagen">
-                    <!-- Espacio entre el botón de seleccionar archivo y la imagen -->
                     <img th:src="@{'/images/' + ${productoDTO.imagenUrl}}" alt="Imagen actual" width="150" class="mt-2">
                 </div>
 
@@ -47,7 +80,7 @@
                     <button type="submit" class="btn btn-primary">Actualizar Producto</button>
                     <div class="d-flex justify-content-between mt-2">
                         <a href="/productos" class="btn btn-secondary">Volver a la Lista de Productos</a>
-                        <a href="/dashboard" class="btn btn-info">Volver al Panel de Control</a>
+                        <a href="/dashboard" class="btn btn-info text-light">Volver al Panel de Control</a>
                     </div>
                 </div>
 
@@ -55,10 +88,10 @@
         </div>
     </div>
 </div>
-
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
+
 
 
 

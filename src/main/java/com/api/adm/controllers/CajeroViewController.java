@@ -38,7 +38,7 @@ public class CajeroViewController {
     @GetMapping("/asignar")
     public String mostrarFormularioAsignar(Model model) {
         model.addAttribute("cajero", new Cajero());
-        model.addAttribute("empleados", empleadoService.obtenerTodosLosEmpleados()); // Asegúrate de pasar los empleados aquí
+        model.addAttribute("empleados", empleadoService.obtenerTodosLosEmpleados());
         return "asignar_cajero";
     }
 
@@ -46,15 +46,14 @@ public class CajeroViewController {
     public String guardarCajero(@ModelAttribute("cajero") @Valid Cajero cajero, BindingResult result, Model model) {
         if (result.hasErrors()) {
             model.addAttribute("empleados", empleadoService.obtenerTodosLosEmpleados());
-            return "asignar_cajero"; // Regresar a la vista con errores
+            return "asignar_cajero";
         }
 
         try {
-            // Asegurarse de que el empleado existe antes de guardar
             if (cajero.getEmpleado() == null || cajero.getEmpleado().getId() == null) {
                 result.rejectValue("empleado", "error.cajero", "El empleado es obligatorio.");
                 model.addAttribute("empleados", empleadoService.obtenerTodosLosEmpleados());
-                return "asignar_cajero"; // Regresar a la vista con error
+                return "asignar_cajero";
             }
 
             cajeroService.guardarCajero(cajero);
@@ -62,7 +61,7 @@ public class CajeroViewController {
         } catch (Exception e) {
             model.addAttribute("error", "Ocurrió un error al guardar el cajero: " + e.getMessage());
             model.addAttribute("empleados", empleadoService.obtenerTodosLosEmpleados());
-            return "asignar_cajero"; // Regresar a la vista con el error
+            return "asignar_cajero";
         }
     }
 
@@ -70,28 +69,37 @@ public class CajeroViewController {
     public String mostrarFormularioEditarCajero(@PathVariable Long id, Model model) {
         Cajero cajero = cajeroService.obtenerCajeroPorId(id);
         if (cajero == null) {
-            return "redirect:/cajeros?error=notfound"; // Manejar el caso donde el cajero no se encuentra
+            return "redirect:/cajeros?error=notfound";
         }
         model.addAttribute("cajero", cajero);
         model.addAttribute("empleados", empleadoService.obtenerTodosLosEmpleados());
-        return "editar_cajero"; // Vista para editar el cajero
+        return "editar_cajero";
     }
 
     @PostMapping("/actualizar/{id}")
     public String actualizarCajero(@PathVariable Long id, @ModelAttribute("cajero") @Valid Cajero cajero, BindingResult result, Model model) {
         if (result.hasErrors()) {
             model.addAttribute("empleados", empleadoService.obtenerTodosLosEmpleados());
-            return "editar_cajero"; // Regresar a la vista con errores
+            return "editar_cajero";
         }
 
         try {
+            Cajero cajeroExistente = cajeroService.obtenerCajeroPorId(id);
+            if (cajeroExistente == null) {
+                return "redirect:/cajeros?error=notfound";
+            }
+
+            if (cajero.getPassword() == null || cajero.getPassword().isEmpty()) {
+                cajero.setPassword(cajeroExistente.getPassword());
+            }
+
             cajero.setEmpleado(empleadoService.obtenerEmpleadoPorId(cajero.getEmpleado().getId()));
             cajeroService.actualizarCajero(id, cajero);
             return "redirect:/cajeros?success=updated";
         } catch (Exception e) {
             model.addAttribute("error", "Ocurrió un error al actualizar el cajero: " + e.getMessage());
             model.addAttribute("empleados", empleadoService.obtenerTodosLosEmpleados());
-            return "editar_cajero"; // Regresar a la vista con error
+            return "editar_cajero";
         }
     }
 
@@ -101,10 +109,11 @@ public class CajeroViewController {
             cajeroService.eliminarCajero(id);
             return "redirect:/cajeros?success=deleted";
         } catch (Exception e) {
-            return "redirect:/cajeros?error=delete_failed"; // Manejar el caso donde la eliminación falla
+            return "redirect:/cajeros?error=delete_failed";
         }
     }
 }
+
 
 
 

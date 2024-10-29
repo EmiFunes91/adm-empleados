@@ -8,49 +8,83 @@
     <link rel="stylesheet" th:href="@{/css/custom-styles.css}">
 </head>
 <body class="bg-dark text-light">
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container">
+        <a class="navbar-brand" href="#">Admin Panel</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/empleados}">Empleados</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/cajeros}">Cajeros</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/usuarios}">Usuarios</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/productos}">Productos</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link btn btn-danger text-white" th:href="@{/logout}">Cerrar Sesión</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- Título principal y subtítulo -->
 <div class="container mt-5">
-    <div class="row justify-content-center">
-        <div class="col-md-6">
-            <div class="card shadow-sm bg-light p-4">
-                <h3 class="text-center">Editar Usuario</h3>
+    <h1 class="text-center mb-3">Gestión de Usuarios</h1>
+    <h3 class="text-center text-light mb-4">Formulario para editar usuario</h3>
+</div>
 
-                <form th:action="@{/usuarios/editar/{id}(id=${usuarioDTO.id})}" method="post" th:object="${usuarioDTO}">
+<div class="d-flex justify-content-center align-items-center">
+    <div class="card shadow-sm bg-light p-4" style="max-width: 600px; width: 100%;">
+        <h2 class="card-header text-center mb-4 text-dark">Editar Usuario</h2>
+        <div class="card-body bg-light text-dark">
+            <form th:action="@{/usuarios/editar/{id}(id=${usuarioDTO.id})}" method="post" th:object="${usuarioDTO}">
 
-                    <div class="mb-3">
-                        <label for="username" class="form-label">Nombre de Usuario:</label>
-                        <input type="text" id="username" th:field="*{username}" class="form-control" required>
-                        <div th:if="${#fields.hasErrors('username')}" class="text-danger">
-                            <small th:errors="*{username}"></small>
-                        </div>
+                <div class="mb-3">
+                    <label for="username" class="form-label">Nombre de Usuario:</label>
+                    <input type="text" id="username" th:field="*{username}" class="form-control" placeholder="Ingresa el usuario" required>
+                    <div th:if="${#fields.hasErrors('username')}" class="text-danger">
+                        <small th:errors="*{username}"></small>
                     </div>
-
-                    <div class="mb-3">
-                        <label for="email" class="form-label">Correo Electrónico:</label>
-                        <input type="email" id="email" th:field="*{email}" class="form-control" required>
-                        <div th:if="${#fields.hasErrors('email')}" class="text-danger">
-                            <small th:errors="*{email}"></small>
-                        </div>
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="roles" class="form-label">Roles:</label>
-                        <select id="roles" th:field="*{roles}" class="form-select" multiple>
-                            <option th:each="role : ${roles}" th:value="${role.name}" th:text="${role.name}"></option>
-                        </select>
-                        <div th:if="${#fields.hasErrors('roles')}" class="text-danger">
-                            <small th:errors="*{roles}"></small>
-                        </div>
-                    </div>
-
-                    <div class="d-grid">
-                        <button type="submit" class="btn btn-primary">Guardar Cambios</button>
-                    </div>
-                </form>
-
-                <div class="mt-3 text-center">
-                    <a href="/usuarios" class="btn btn-secondary">Volver a la Lista de Usuarios</a>
-                    <a href="/dashboard" class="btn btn-info">Ir al Panel de Control</a>
                 </div>
+
+                <div class="mb-3">
+                    <label for="correo" class="form-label">Correo Electrónico:</label>
+                    <input type="email" id="correo" th:field="*{email}" class="form-control" placeholder="Ingresa el correo" required pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}">
+                    <div th:if="${#fields.hasErrors('email')}" class="text-danger">
+                        <small th:errors="*{email}"></small>
+                    </div>
+                    <small class="form-text text-black">Formato: ejemplo@dominio.com</small>
+                </div>
+
+                <div class="mb-3">
+                    <label for="roles" class="form-label">Roles:</label>
+                    <select id="roles" th:field="*{roles}" class="form-select" multiple>
+                        <option th:each="role : ${roles}" th:value="${role.name}" th:text="${role.name}"></option>
+                    </select>
+                    <div th:if="${#fields.hasErrors('roles')}" class="text-danger">
+                        <small th:errors="*{roles}"></small>
+                    </div>
+                </div>
+
+                <div class="d-grid">
+                    <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                </div>
+            </form>
+
+            <div class="mt-3 text-center">
+                <a href="/usuarios" class="btn btn-secondary">Volver a la Lista de Usuarios</a>
+                <a href="/dashboard" class="btn btn-info text-light">Ir al Panel de Control</a>
             </div>
         </div>
     </div>
@@ -58,6 +92,8 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
+
+
 
 
 

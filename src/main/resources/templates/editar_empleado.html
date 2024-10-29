@@ -7,80 +7,118 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" th:href="@{/css/custom-styles.css}">
 </head>
-<body class="bg-dark text-light d-flex justify-content-center align-items-center" style="height: 100vh;">
-<div class="card shadow-sm p-4 bg-secondary" style="max-width: 500px; width: 100%;">
-  <h2 class="text-center mb-4">Editar Empleado</h2>
+<body class="bg-dark text-light">
 
-  <!-- Mensaje de error si hay algún problema en el envío del formulario -->
-  <div th:if="${#fields.hasErrors()}" class="alert alert-danger">
-    Por favor, corrige los errores en el formulario.
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+  <div class="container">
+    <a class="navbar-brand" href="#">Admin Panel</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item">
+          <a class="nav-link" th:href="@{/empleados}">Empleados</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" th:href="@{/cajeros}">Cajeros</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" th:href="@{/usuarios}">Usuarios</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" th:href="@{/productos}">Productos</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link btn btn-danger text-white" th:href="@{/logout}">Cerrar Sesión</a>
+        </li>
+      </ul>
+    </div>
   </div>
+</nav>
 
-  <!-- Formulario -->
-  <form th:action="@{/empleados/actualizar/{id}(id=${empleado.id})}" th:object="${empleado}" method="post" onsubmit="return confirm('¿Estás seguro de que deseas guardar los cambios?')">
+<!-- Título principal y subtítulo -->
+<div class="container mt-5">
+  <h1 class="text-center mb-3">Gestión de Empleados</h1>
+  <h3 class="text-center text-light mb-4">Formulario para editar información del empleado</h3>
+</div>
 
-    <!-- Nombre -->
-    <div class="mb-3">
-      <label for="nombre" class="form-label">Nombre:</label>
-      <input type="text" id="nombre" th:field="*{nombre}" class="form-control" required>
-      <div th:if="${#fields.hasErrors('nombre')}" class="text-danger">
-        <small th:errors="*{nombre}"></small>
-      </div>
+<div class="d-flex justify-content-center align-items-center">
+  <div class="card shadow-sm bg-light p-4" style="max-width: 500px; width: 100%;">
+    <h2 class="card-header text-center mb-4">Editar Empleado</h2>
+
+    <!-- Mensaje de error si hay algún problema en el envío del formulario -->
+    <div th:if="${#fields.hasErrors()}" class="alert alert-danger text-black">
+      Por favor, corrige los errores en el formulario.
     </div>
 
-    <!-- Apellido -->
-    <div class="mb-3">
-      <label for="apellido" class="form-label">Apellido:</label>
-      <input type="text" id="apellido" th:field="*{apellido}" class="form-control" required>
-      <div th:if="${#fields.hasErrors('apellido')}" class="text-danger">
-        <small th:errors="*{apellido}"></small>
-      </div>
-    </div>
+    <!-- Formulario -->
+    <form th:action="@{/empleados/actualizar/{id}(id=${empleado.id})}" th:object="${empleado}" method="post" onsubmit="return confirm('¿Estás seguro de que deseas guardar los cambios?')">
 
-    <!-- DNI -->
-    <div class="mb-3">
-      <label for="dni" class="form-label">DNI:</label>
-      <input type="text" id="dni" th:field="*{dni}" class="form-control" required pattern="\d{8}">
-      <div th:if="${#fields.hasErrors('dni')}" class="text-danger">
-        <small th:errors="*{dni}"></small>
+      <!-- Nombre -->
+      <div class="mb-3">
+        <label for="nombre" class="form-label">Nombre:</label>
+        <input type="text" id="nombre" th:field="*{nombre}" class="form-control" required>
+        <div th:if="${#fields.hasErrors('nombre')}" class="text-danger">
+          <small th:errors="*{nombre}"></small>
+        </div>
       </div>
-      <small class="form-text text-light">El DNI debe tener 8 dígitos.</small>
-    </div>
 
-    <!-- Celular -->
-    <div class="mb-3">
-      <label for="celular" class="form-label">Celular:</label>
-      <input type="text" id="celular" th:field="*{celular}" class="form-control" required pattern="\d{10,15}">
-      <div th:if="${#fields.hasErrors('celular')}" class="text-danger">
-        <small th:errors="*{celular}"></small>
+      <!-- Apellido -->
+      <div class="mb-3">
+        <label for="apellido" class="form-label">Apellido:</label>
+        <input type="text" id="apellido" th:field="*{apellido}" class="form-control" required>
+        <div th:if="${#fields.hasErrors('apellido')}" class="text-danger">
+          <small th:errors="*{apellido}"></small>
+        </div>
       </div>
-      <small class="form-text text-light">El celular debe tener entre 10 y 15 dígitos.</small>
-    </div>
 
-    <!-- Correo -->
-    <div class="mb-3">
-      <label for="correo" class="form-label">Correo:</label>
-      <input type="email" id="correo" th:field="*{correo}" class="form-control" required pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}">
-      <div th:if="${#fields.hasErrors('correo')}" class="text-danger">
-        <small th:errors="*{correo}"></small>
+      <!-- DNI -->
+      <div class="mb-3">
+        <label for="dni" class="form-label">DNI:</label>
+        <input type="text" id="dni" th:field="*{dni}" class="form-control" required pattern="\d{8}">
+        <div th:if="${#fields.hasErrors('dni')}" class="text-danger">
+          <small th:errors="*{dni}"></small>
+        </div>
+        <small class="form-text text-black">El DNI debe tener 8 dígitos.</small>
       </div>
-      <small class="form-text text-light">Formato: ejemplo@dominio.com</small>
-    </div>
 
-    <!-- Botones de acción -->
-    <div class="d-grid">
-      <button type="submit" class="btn btn-danger">Guardar Cambios</button>
-      <div class="d-flex justify-content-between mt-2">
-        <a href="/empleados" class="btn btn-secondary">Volver a la Lista de Empleados</a>
-        <a href="/dashboard" class="btn btn-info">Ir al Panel de Control</a>
+      <!-- Celular -->
+      <div class="mb-3">
+        <label for="celular" class="form-label">Celular:</label>
+        <input type="text" id="celular" th:field="*{celular}" class="form-control" required pattern="\d{10,15}">
+        <div th:if="${#fields.hasErrors('celular')}" class="text-danger">
+          <small th:errors="*{celular}"></small>
+        </div>
+        <small class="form-text text-black">El celular debe tener entre 10 y 15 dígitos.</small>
       </div>
-    </div>
-  </form>
+
+      <!-- Correo -->
+      <div class="mb-3">
+        <label for="correo" class="form-label">Correo:</label>
+        <input type="email" id="correo" th:field="*{correo}" class="form-control" required pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}">
+        <div th:if="${#fields.hasErrors('correo')}" class="text-danger">
+          <small th:errors="*{correo}"></small>
+        </div>
+        <small class="form-text text-black">Formato: ejemplo@dominio.com</small>
+      </div>
+
+      <!-- Botones de acción -->
+      <div class="d-grid">
+        <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+      </div>
+    </form>
+  </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
+
+
+
+
 
 
 

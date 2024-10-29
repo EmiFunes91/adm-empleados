@@ -7,79 +7,120 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" th:href="@{/css/custom-styles.css}">
 </head>
-<body class="bg-dark text-light d-flex justify-content-center align-items-center" style="height: 100vh;">
-<div class="card shadow-sm p-4 bg-light" style="max-width: 500px; width: 100%;">
-    <h2 class="text-center mb-4">Agregar Nuevo Empleado</h2>
+<body class="bg-dark text-light">
 
-    <form th:action="@{/empleados/guardar}" th:object="${empleado}" method="post">
-        <input type="hidden" th:field="*{id}" />
-
-        <div th:if="${#fields.hasErrors()}" class="alert alert-danger">
-            Por favor, corrige los errores en el formulario.
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container">
+        <a class="navbar-brand" href="#">Admin Panel</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/empleados}">Empleados</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/cajeros}">Cajeros</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/usuarios}">Usuarios</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/productos}">Productos</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link btn btn-danger text-white" th:href="@{/logout}">Cerrar Sesión</a>
+                </li>
+            </ul>
         </div>
+    </div>
+</nav>
 
-        <!-- Nombre -->
-        <div class="mb-3">
-            <label for="nombre" class="form-label">Nombre:</label>
-            <input type="text" id="nombre" th:field="*{nombre}" class="form-control" placeholder="Ingresa el nombre" required>
-            <div th:if="${#fields.hasErrors('nombre')}" class="text-danger">
-                <small th:errors="*{nombre}"></small>
+<!-- Título principal y subtítulo -->
+<div class="container mt-5">
+    <h1 class="text-center mb-3">Gestión de Empleados</h1>
+    <h3 class="text-center text-light mb-4">Formulario para agregar un nuevo empleado</h3>
+
+    <div class="d-flex justify-content-center align-items-center">
+        <div class="card shadow-sm bg-light p-4" style="max-width: 500px; width: 100%;">
+            <div class="card-header text-center bg-light text-dark mb-4">
+                <h1 class="h3">Agregar Nuevo Empleado</h1>
             </div>
-        </div>
 
-        <!-- Apellido -->
-        <div class="mb-3">
-            <label for="apellido" class="form-label">Apellido:</label>
-            <input type="text" id="apellido" th:field="*{apellido}" class="form-control" placeholder="Ingresa el apellido" required>
-            <div th:if="${#fields.hasErrors('apellido')}" class="text-danger">
-                <small th:errors="*{apellido}"></small>
-            </div>
-        </div>
+            <form th:action="@{/empleados/guardar}" th:object="${empleado}" method="post">
+                <input type="hidden" th:field="*{id}" />
 
-        <!-- DNI -->
-        <div class="mb-3">
-            <label for="dni" class="form-label">DNI:</label>
-            <input type="text" id="dni" th:field="*{dni}" class="form-control" placeholder="Ingresa el DNI" required pattern="\d{8}">
-            <div th:if="${#fields.hasErrors('dni')}" class="text-danger">
-                <small th:errors="*{dni}"></small>
-            </div>
-            <small class="form-text text-light">El DNI debe tener 8 dígitos.</small>
-        </div>
+                <div th:if="${#fields.hasErrors()}" class="alert alert-danger">
+                    Por favor, corrige los errores en el formulario.
+                </div>
 
-        <!-- Celular -->
-        <div class="mb-3">
-            <label for="celular" class="form-label">Celular:</label>
-            <input type="text" id="celular" th:field="*{celular}" class="form-control" placeholder="Ingresa el celular" required pattern="\d{10,15}">
-            <div th:if="${#fields.hasErrors('celular')}" class="text-danger">
-                <small th:errors="*{celular}"></small>
-            </div>
-            <small class="form-text text-light">El celular debe tener entre 10 y 15 dígitos.</small>
-        </div>
+                <!-- Nombre -->
+                <div class="mb-3">
+                    <label for="nombre" class="form-label">Nombre:</label>
+                    <input type="text" id="nombre" th:field="*{nombre}" class="form-control" placeholder="Ingresa el nombre" required>
+                    <div th:if="${#fields.hasErrors('nombre')}" class="text-danger">
+                        <small th:errors="*{nombre}"></small>
+                    </div>
+                </div>
 
-        <!-- Correo -->
-        <div class="mb-3">
-            <label for="correo" class="form-label">Correo:</label>
-            <input type="email" id="correo" th:field="*{correo}" class="form-control" placeholder="Ingresa el correo" required pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}">
-            <div th:if="${#fields.hasErrors('correo')}" class="text-danger">
-                <small th:errors="*{correo}"></small>
-            </div>
-            <small class="form-text text-light">Formato: ejemplo@dominio.com</small>
-        </div>
+                <!-- Apellido -->
+                <div class="mb-3">
+                    <label for="apellido" class="form-label">Apellido:</label>
+                    <input type="text" id="apellido" th:field="*{apellido}" class="form-control" placeholder="Ingresa el apellido" required>
+                    <div th:if="${#fields.hasErrors('apellido')}" class="text-danger">
+                        <small th:errors="*{apellido}"></small>
+                    </div>
+                </div>
 
-        <!-- Botones de acción -->
-        <div class="d-grid">
-            <button type="submit" class="btn btn-primary">Guardar</button>
-            <div class="d-flex justify-content-between mt-2">
-                <a href="/empleados" class="btn btn-secondary">Volver a la Lista de Empleados</a>
-                <a href="/dashboard" class="btn btn-info">Ir al Panel de Control</a>
-            </div>
+                <!-- DNI -->
+                <div class="mb-3">
+                    <label for="dni" class="form-label">DNI:</label>
+                    <input type="text" id="dni" th:field="*{dni}" class="form-control" placeholder="Ingresa el DNI" required pattern="\d{8}">
+                    <div th:if="${#fields.hasErrors('dni')}" class="text-danger">
+                        <small th:errors="*{dni}"></small>
+                    </div>
+                    <small class="form-text text-black">El DNI debe tener 8 dígitos.</small>
+                </div>
+
+                <!-- Celular -->
+                <div class="mb-3">
+                    <label for="celular" class="form-label">Celular:</label>
+                    <input type="text" id="celular" th:field="*{celular}" class="form-control" placeholder="Ingresa el celular" required pattern="\d{10,15}">
+                    <div th:if="${#fields.hasErrors('celular')}" class="text-danger">
+                        <small th:errors="*{celular}"></small>
+                    </div>
+                    <small class="form-text text-black">El celular debe tener entre 10 y 15 dígitos.</small>
+                </div>
+
+                <!-- Correo -->
+                <div class="mb-3">
+                    <label for="correo" class="form-label">Correo:</label>
+                    <input type="email" id="correo" th:field="*{correo}" class="form-control" placeholder="Ingresa el correo" required pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}">
+                    <div th:if="${#fields.hasErrors('correo')}" class="text-danger">
+                        <small th:errors="*{correo}"></small>
+                    </div>
+                    <small class="form-text text-black">Formato: ejemplo@dominio.com</small>
+                </div>
+
+                <!-- Botones de acción -->
+                <div class="d-grid">
+                    <button type="submit" class="btn btn-primary">Guardar</button>
+                    <div class="d-flex justify-content-between mt-2">
+                        <a href="/empleados" class="btn btn-secondary">Volver a la Lista de Empleados</a>
+                        <a href="/dashboard" class="btn btn-info text-white">Ir al Panel de Control</a>
+                    </div>
+                </div>
+            </form>
         </div>
-    </form>
+    </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
+
 
 
 

@@ -6,7 +6,7 @@ body {
 
 /* Navbar */
 .navbar {
-    background-color: #004085; /* Azul oscuro */
+    background-color: #0096C7;
 }
 
 .navbar .nav-link, .navbar .navbar-brand {
@@ -15,9 +15,10 @@ body {
 
 /* Botones */
 .btn-primary {
-    background-color: #004085;
-    border-color: #004085;
+    background-color: #0096C7;
+    border-color: #274B8C;
 }
+
 
 .btn-success {
     background-color: #28a745;

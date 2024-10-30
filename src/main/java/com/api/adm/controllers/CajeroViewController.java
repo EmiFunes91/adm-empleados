@@ -32,7 +32,7 @@ public class CajeroViewController {
         }
         model.addAttribute("cajeros", cajeros);
         model.addAttribute("query", query);
-        return "cajeros"; // Nombre de la plantilla Thymeleaf para listar cajeros
+        return "cajeros";
     }
 
     @GetMapping("/asignar")
@@ -71,6 +71,7 @@ public class CajeroViewController {
         if (cajero == null) {
             return "redirect:/cajeros?error=notfound";
         }
+
         model.addAttribute("cajero", cajero);
         model.addAttribute("empleados", empleadoService.obtenerTodosLosEmpleados());
         return "editar_cajero";
@@ -113,6 +114,9 @@ public class CajeroViewController {
         }
     }
 }
+
+
+
 
 
 

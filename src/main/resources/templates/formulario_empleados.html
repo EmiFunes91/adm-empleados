@@ -31,10 +31,10 @@
                     <a class="nav-link" th:href="@{/productos}">Productos</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" th:href="@{/productos}">Clientes</a>
+                    <a class="nav-link" th:href="@{/clientes}">Clientes</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" th:href="@{/productos}">Facturación</a>
+                    <a class="nav-link" th:href="@{/facturacion}">Facturación</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link btn btn-danger text-white" th:href="@{/logout}">Cerrar Sesión</a>
@@ -113,10 +113,7 @@
                 <!-- Botones de acción -->
                 <div class="d-grid">
                     <button type="submit" class="btn btn-primary">Guardar</button>
-                    <div class="d-flex justify-content-between mt-2">
-                        <a href="/empleados" class="btn btn-secondary">Volver a la Lista de Empleados</a>
-                        <a href="/dashboard" class="btn btn-info text-white">Ir al Panel de Control</a>
-                    </div>
+                    <a th:href="@{/empleados}" class="btn btn-secondary mt-2">Cancelar</a>
                 </div>
             </form>
         </div>

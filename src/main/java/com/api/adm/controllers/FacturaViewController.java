@@ -34,9 +34,10 @@ public class FacturaViewController {
     @GetMapping("/nueva")
     public String mostrarFormularioFactura(Model model) {
         model.addAttribute("factura", new Factura());
-        model.addAttribute("clientes", clienteService.obtenerTodosLosClientes());  // Enviar la lista de clientes
+        model.addAttribute("clientes", clienteService.obtenerTodosLosClientes());
         return "formulario_facturas";  // Vista 'formulario_facturas.html'
     }
+
 
     // Guardar una nueva factura
     @PostMapping("/guardar")

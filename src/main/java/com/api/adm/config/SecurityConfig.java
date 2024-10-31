@@ -24,6 +24,7 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)  // Deshabilitar CSRF correctamente en Spring 6.1
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/login", "/logout", "/register", "/css/**", "/js/**").permitAll() // Permitir el acceso a estas rutas
+                        .requestMatchers("/clientes/**", "/facturacion/**").permitAll()  // Permitir acceso a rutas de clientes y facturación
                         .anyRequest().authenticated()  // Cualquier otra solicitud requiere autenticación
                 )
                 .formLogin(form -> form

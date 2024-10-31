@@ -71,11 +71,11 @@ public class CajeroViewController {
         if (cajero == null) {
             return "redirect:/cajeros?error=notfound";
         }
-
         model.addAttribute("cajero", cajero);
         model.addAttribute("empleados", empleadoService.obtenerTodosLosEmpleados());
-        return "editar_cajero";
+        return "editar_cajero";  // Asegurarse de que esta vista esté correctamente nombrada y presente en el directorio de vistas
     }
+
 
     @PostMapping("/actualizar/{id}")
     public String actualizarCajero(@PathVariable Long id, @ModelAttribute("cajero") @Valid Cajero cajero, BindingResult result, Model model) {

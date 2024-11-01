@@ -1,9 +1,10 @@
 package com.api.adm.controllers;
 
 import com.api.adm.entity.Factura;
-import com.api.adm.entity.Cliente;
+import com.api.adm.entity.FacturaDetalle;
 import com.api.adm.service.FacturaService;
 import com.api.adm.service.ClienteService;
+import com.api.adm.service.ProductoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -23,57 +24,60 @@ public class FacturaViewController {
     @Autowired
     private ClienteService clienteService;
 
-    // Listar todas las facturas
+    @Autowired
+    private ProductoService productoService;
+
     @GetMapping
     public String listarFacturas(Model model) {
         model.addAttribute("facturas", facturaService.obtenerTodasLasFacturas());
-        return "facturacion";  // Vista 'facturacion.html'
+        return "facturacion";
     }
 
-    // Mostrar formulario para crear una nueva factura
     @GetMapping("/nueva")
     public String mostrarFormularioFactura(Model model) {
         model.addAttribute("factura", new Factura());
         model.addAttribute("clientes", clienteService.obtenerTodosLosClientes());
-        return "formulario_facturas";  // Vista 'formulario_facturas.html'
+        model.addAttribute("productos", productoService.obtenerTodosLosProductos());
+        return "formulario_facturas";
     }
 
-
-    // Guardar una nueva factura
     @PostMapping("/guardar")
-    public String guardarFactura(@Valid @ModelAttribute("factura") Factura factura, @RequestParam("clienteId") Long clienteId, BindingResult result, Model model) {
+    public String guardarFactura(@Valid @ModelAttribute("factura") Factura factura,
+                                 @RequestParam("clienteId") Long clienteId,
+                                 @RequestParam("detalles") List<FacturaDetalle> detalles,
+                                 BindingResult result, Model model) {
         if (result.hasErrors()) {
             model.addAttribute("clientes", clienteService.obtenerTodosLosClientes());
+            model.addAttribute("productos", productoService.obtenerTodosLosProductos());
             return "formulario_facturas";
         }
-        facturaService.crearFactura(factura, clienteId);
+        facturaService.crearFactura(factura, clienteId, detalles);
         return "redirect:/facturacion?success=created";
     }
 
-    // Mostrar formulario para editar una factura existente
     @GetMapping("/editar/{id}")
     public String mostrarFormularioEdicionFactura(@PathVariable Long id, Model model) {
         Factura factura = facturaService.obtenerFacturaPorId(id);
         model.addAttribute("factura", factura);
         model.addAttribute("clientes", clienteService.obtenerTodosLosClientes());
-        return "formulario_facturas";  // Reutiliza 'formulario_facturas.html'
+        return "editar_facturas";
     }
 
-    // Actualizar una factura existente
     @PostMapping("/actualizar/{id}")
-    public String actualizarFactura(@PathVariable Long id, @Valid @ModelAttribute("factura") Factura factura, BindingResult result, Model model) {
+    public String actualizarFactura(@PathVariable Long id, @Valid @ModelAttribute("factura") Factura factura,
+                                    BindingResult result, Model model) {
         if (result.hasErrors()) {
             model.addAttribute("clientes", clienteService.obtenerTodosLosClientes());
-            return "formulario_facturas";
+            return "editar_facturas";
         }
         facturaService.actualizarFactura(id, factura);
         return "redirect:/facturacion?success=updated";
     }
 
-    // Eliminar una factura
     @PostMapping("/eliminar/{id}")
     public String eliminarFactura(@PathVariable Long id) {
         facturaService.eliminarFactura(id);
         return "redirect:/facturacion?success=deleted";
     }
 }
+

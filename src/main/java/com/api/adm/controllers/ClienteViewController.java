@@ -17,21 +17,18 @@ public class ClienteViewController {
     @Autowired
     private ClienteService clienteService;
 
-    // Listar todos los clientes
     @GetMapping
     public String listarClientes(Model model) {
         model.addAttribute("clientes", clienteService.obtenerTodosLosClientes());
-        return "clientes";  // Vista 'clientes.html'
+        return "clientes";
     }
 
-    // Mostrar formulario para agregar un nuevo cliente
     @GetMapping("/nuevo")
     public String mostrarFormularioCliente(Model model) {
         model.addAttribute("cliente", new Cliente());
-        return "formulario_cliente";  // Vista 'formulario_cliente.html'
+        return "formulario_cliente";
     }
 
-    // Guardar un nuevo cliente
     @PostMapping("/guardar")
     public String guardarCliente(@Valid @ModelAttribute("cliente") Cliente cliente, BindingResult result, Model model) {
         if (result.hasErrors()) {
@@ -41,29 +38,27 @@ public class ClienteViewController {
         return "redirect:/clientes?success=created";
     }
 
-    // Mostrar formulario para editar un cliente existente
     @GetMapping("/editar/{id}")
     public String mostrarFormularioEdicion(@PathVariable Long id, Model model) {
         Cliente cliente = clienteService.obtenerClientePorId(id);
         model.addAttribute("cliente", cliente);
-        return "formulario_cliente";  // Reutiliza 'formulario_cliente.html'
+        return "editar_clientes";
     }
 
-    // Actualizar un cliente existente
     @PostMapping("/actualizar/{id}")
     public String actualizarCliente(@PathVariable Long id, @Valid @ModelAttribute("cliente") Cliente cliente, BindingResult result, Model model) {
         if (result.hasErrors()) {
-            return "formulario_cliente";
+            return "editar_clientes";
         }
         clienteService.actualizarCliente(id, cliente);
         return "redirect:/clientes?success=updated";
     }
 
-    // Eliminar un cliente
     @PostMapping("/eliminar/{id}")
     public String eliminarCliente(@PathVariable Long id) {
         clienteService.eliminarCliente(id);
         return "redirect:/clientes?success=deleted";
     }
 }
+
 

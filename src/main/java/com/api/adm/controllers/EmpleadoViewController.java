@@ -36,13 +36,13 @@ public class EmpleadoViewController {
     @GetMapping("/nuevo")
     public String mostrarFormularioDeNuevoEmpleado(Model model) {
         model.addAttribute("empleado", new Empleado()); // Inicializa un nuevo empleado
-        return "formulario_empleado"; // Nombre de la plantilla para el nuevo empleado
+        return "formulario_empleados"; // Nombre de la plantilla para el nuevo empleado
     }
 
     @PostMapping("/guardar")
     public String guardarEmpleado(@Valid @ModelAttribute("empleado") Empleado empleado, BindingResult bindingResult, Model model) {
         if (bindingResult.hasErrors()) {
-            return "formulario_empleado"; // Regresa al formulario si hay errores
+            return "formulario_empleados"; // Regresa al formulario si hay errores
         }
         try {
             empleadoService.guardarEmpleado(empleado);
@@ -50,7 +50,7 @@ public class EmpleadoViewController {
         } catch (Exception e) {
             model.addAttribute("error", "No se pudo guardar el empleado: " + e.getMessage());
             model.addAttribute("empleado", empleado); // Regresa el objeto empleado para mostrar en el formulario
-            return "formulario_empleado"; // Regresa al formulario en caso de error
+            return "formulario_empleados"; // Regresa al formulario en caso de error
         }
     }
 
@@ -61,7 +61,7 @@ public class EmpleadoViewController {
             return "redirect:/empleados?error=notfound"; // O manejar el error de otra manera
         }
         model.addAttribute("empleado", empleado);
-        return "formulario_empleado"; // Nombre de la plantilla para editar
+        return "formulario_empleados"; // Nombre de la plantilla para editar
     }
 
     @PostMapping("/eliminar/{id}")

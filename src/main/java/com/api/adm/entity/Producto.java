@@ -1,20 +1,53 @@
 package com.api.adm.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
+import java.math.BigDecimal;
 import java.util.Objects;
 
 @Entity
+@Table(name = "productos")
 public class Producto {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotBlank(message = "El nombre del producto es obligatorio")
+    @Column(nullable = false, length = 100)
     private String nombre;
+
+    @NotBlank(message = "La categoría del producto es obligatoria")
+    @Column(nullable = false, length = 50)
     private String categoria;
-    private Double precio;
+
+    @NotNull(message = "El precio del producto es obligatorio")
+    @Positive(message = "El precio debe ser un valor positivo")
+    @Column(nullable = false, precision = 10, scale = 2)
+    private BigDecimal precio;
+
+    @NotNull(message = "El stock del producto es obligatorio")
+    @Min(value = 0, message = "El stock no puede ser negativo")
+    @Column(nullable = false)
     private Integer stock;
+
+    @Column(name = "imagen_url")
     private String imagenUrl;
+
+    // Constructor por defecto
+    public Producto() {
+    }
+
+    public Producto(String nombre, String categoria, BigDecimal precio, Integer stock, String imagenUrl) {
+        this.nombre = nombre;
+        this.categoria = categoria;
+        this.precio = precio;
+        this.stock = stock;
+        this.imagenUrl = imagenUrl;
+    }
 
     // Getters y Setters
     public Long getId() {
@@ -41,11 +74,11 @@ public class Producto {
         this.categoria = categoria;
     }
 
-    public Double getPrecio() {
+    public BigDecimal getPrecio() {
         return precio;
     }
 
-    public void setPrecio(Double precio) {
+    public void setPrecio(BigDecimal precio) {
         this.precio = precio;
     }
 
@@ -63,6 +96,14 @@ public class Producto {
 
     public void setImagenUrl(String imagenUrl) {
         this.imagenUrl = imagenUrl;
+    }
+
+    // Método para reducir el stock de forma segura
+    public void reducirStock(int cantidad) {
+        if (cantidad > this.stock) {
+            throw new IllegalArgumentException("Cantidad solicitada excede el stock disponible");
+        }
+        this.stock -= cantidad;
     }
 
     @Override

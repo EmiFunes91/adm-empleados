@@ -3,13 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Formulario Factura</title>
+    <title>Editar Factura</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" th:href="@{/css/custom-styles.css}">
 </head>
 <body class="bg-dark text-light">
-
-<!-- Barra de navegación -->
+<!-- Navbar -->
 <nav class="navbar navbar-expand-lg navbar-dark">
     <div class="container">
         <a class="navbar-brand" th:href="@{/dashboard}">Admin Panel</a>
@@ -18,57 +17,41 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ms-auto">
-                <li class="nav-item">
-                    <a class="nav-link" th:href="@{/empleados}">Empleados</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" th:href="@{/cajeros}">Cajeros</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" th:href="@{/usuarios}">Usuarios</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" th:href="@{/productos}">Productos</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" th:href="@{/clientes}">Clientes</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" th:href="@{/facturacion}">Facturación</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link btn btn-danger text-white" th:href="@{/logout}">Cerrar Sesión</a>
-                </li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/clientes}">Clientes</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/facturacion}">Facturación</a></li>
+                <li class="nav-item"><a class="nav-link btn btn-danger text-white" th:href="@{/logout}">Cerrar Sesión</a></li>
             </ul>
         </div>
     </div>
 </nav>
 
 <div class="container mt-5">
-    <h1 class="text-center mb-3" th:text="${factura != null ? 'Editar Factura' : 'Agregar Nueva Factura'}">Agregar Nueva Factura</h1>
+    <h1 class="text-center mb-3">Editar Factura</h1>
     <div class="d-flex justify-content-center align-items-center">
         <div class="card shadow-sm bg-light p-4" style="max-width: 800px; width: 100%;">
-            <form th:action="|${factura != null ? '/facturacion/actualizar/' + factura.id : '/facturacion/guardar'}|" th:object="${factura}" method="post">
+            <h2 class="card-header text-center mb-4">Editar Factura</h2>
+            <div th:if="${#fields.hasErrors()}" class="alert alert-danger text-black">Por favor, corrige los errores en el formulario.</div>
+            <form th:action="@{/facturacion/actualizar/{id}(id=${factura.id})}" th:object="${factura}" method="post">
 
                 <!-- Selección de Cliente -->
                 <div class="mb-3">
-                    <label for="cliente" class="form-label">Cliente</label>
+                    <label for="cliente" class="form-label">Cliente:</label>
                     <select id="cliente" th:field="*{cliente.id}" class="form-select" required>
                         <option value="" disabled>Selecciona un cliente</option>
-                        <option th:each="cliente : ${clientes}" th:value="${cliente.id}" th:text="${cliente.nombre} + ' ' + cliente.apellido}"></option>
+                        <option th:each="cliente : ${clientes}" th:value="${cliente.id}" th:text="${cliente.nombre + ' ' + cliente.apellido}"></option>
                     </select>
                 </div>
 
                 <!-- Número de Factura -->
                 <div class="mb-3">
-                    <label for="numeroFactura" class="form-label">Número de Factura</label>
-                    <input type="text" id="numeroFactura" th:field="*{numeroFactura}" class="form-control" placeholder="Número único de la factura" required />
+                    <label for="numeroFactura" class="form-label">Número de Factura:</label>
+                    <input type="text" id="numeroFactura" th:field="*{numeroFactura}" class="form-control" required>
                 </div>
 
                 <!-- Fecha de Emisión -->
                 <div class="mb-3">
-                    <label for="fechaEmision" class="form-label">Fecha de Emisión</label>
-                    <input type="date" id="fechaEmision" th:field="*{fechaEmision}" class="form-control" required />
+                    <label for="fechaEmision" class="form-label">Fecha de Emisión:</label>
+                    <input type="date" id="fechaEmision" th:field="*{fechaEmision}" class="form-control" required>
                 </div>
 
                 <!-- Selección de Productos -->
@@ -116,12 +99,12 @@
 
                 <!-- Total -->
                 <div class="mb-3">
-                    <label for="total" class="form-label">Total</label>
+                    <label for="total" class="form-label">Total:</label>
                     <input type="text" id="total" th:field="*{total}" class="form-control" readonly />
                 </div>
 
                 <div class="d-grid">
-                    <button type="submit" class="btn btn-primary">Guardar</button>
+                    <button type="submit" class="btn btn-primary">Guardar Cambios</button>
                     <a th:href="@{/facturacion}" class="btn btn-secondary mt-2">Cancelar</a>
                 </div>
             </form>
@@ -132,5 +115,3 @@
 <script src="/js/calcularTotal.js"></script>
 </body>
 </html>
-
-

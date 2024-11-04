@@ -8,6 +8,8 @@
     <link rel="stylesheet" th:href="@{/css/custom-styles.css}">
 </head>
 <body class="bg-dark text-light">
+
+<!-- Barra de navegación -->
 <nav class="navbar navbar-expand-lg navbar-dark">
     <div class="container">
         <a class="navbar-brand" th:href="@{/dashboard}">Admin Panel</a>
@@ -16,9 +18,30 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ms-auto">
-                <li class="nav-item"><a class="nav-link" th:href="@{/clientes}">Clientes</a></li>
-                <li class="nav-item"><a class="nav-link" th:href="@{/facturacion}">Facturación</a></li>
-                <li class="nav-item"><a class="nav-link btn btn-danger text-white" th:href="@{/logout}">Cerrar Sesión</a></li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/empleados}">Empleados</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/cajeros}">Cajeros</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/usuarios}">Usuarios</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/productos}">Productos</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/clientes}">Clientes</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/compras}">Compras</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/facturacion}">Facturación</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link btn btn-danger text-white" th:href="@{/logout}">Cerrar Sesión</a>
+                </li>
             </ul>
         </div>
     </div>

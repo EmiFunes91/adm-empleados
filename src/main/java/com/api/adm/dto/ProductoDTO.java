@@ -3,6 +3,7 @@ package com.api.adm.dto;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import java.math.BigDecimal;
 
 public class ProductoDTO {
 
@@ -16,7 +17,7 @@ public class ProductoDTO {
 
     @NotNull(message = "El precio es obligatorio")
     @Min(value = 0, message = "El precio debe ser mayor o igual a 0")
-    private Double precio;
+    private BigDecimal precio;
 
     @NotNull(message = "El stock es obligatorio")
     @Min(value = 0, message = "El stock debe ser mayor o igual a 0")
@@ -50,11 +51,11 @@ public class ProductoDTO {
         this.categoria = categoria;
     }
 
-    public Double getPrecio() {
+    public BigDecimal getPrecio() {
         return precio;
     }
 
-    public void setPrecio(Double precio) {
+    public void setPrecio(BigDecimal precio) {
         this.precio = precio;
     }
 
@@ -74,6 +75,8 @@ public class ProductoDTO {
         this.imagenUrl = imagenUrl;
     }
 }
+
+
 
 
 

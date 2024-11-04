@@ -135,7 +135,7 @@ public class ProductoViewController {
         producto.setPrecio(productoDTO.getPrecio());
         producto.setStock(productoDTO.getStock());
 
-        // Si se ha subido una nueva imagen, reemplazar la existente
+        // Sí se ha subido una nueva imagen, reemplazar la existente
         if (!imagen.isEmpty()) {
             String rutaDirectorio = "C:/Users/emili/Documents/images";
             String nombreArchivo = UUID.randomUUID() + "_" + imagen.getOriginalFilename();
@@ -169,8 +169,8 @@ public class ProductoViewController {
         productoService.actualizarProducto(id, producto);
         return "redirect:/productos?success=updated";
     }
-
 }
+
 
 
 

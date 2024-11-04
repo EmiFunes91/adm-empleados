@@ -74,7 +74,7 @@ public class Producto {
         this.categoria = categoria;
     }
 
-    public BigDecimal getPrecio() {
+    public @NotNull(message = "El precio del producto es obligatorio") @Positive(message = "El precio debe ser un valor positivo") BigDecimal getPrecio() {
         return precio;
     }
 
@@ -119,6 +119,8 @@ public class Producto {
         return Objects.hash(id);
     }
 }
+
+
 
 
 

@@ -93,7 +93,7 @@
             <td th:text="${cliente.correo}">Correo</td>
             <td th:text="${cliente.telefono}">Teléfono</td>
             <td>
-                <a class="btn btn-primary btn-sm me-1" th:href="@{/clientes/editar/{id}(id=${cliente.id})}">Editar</a>
+                <a class="btn btn-primary btn-sm me-1" th:href="@{/clientes/editar/{id}(id=${cliente.id})} ">Editar</a>
                 <form th:action="@{/clientes/eliminar/{id}(id=${cliente.id})}" method="post" style="display: inline;" onsubmit="return confirm('¿Estás seguro de que deseas eliminar este cliente?')">
                     <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
                 </form>

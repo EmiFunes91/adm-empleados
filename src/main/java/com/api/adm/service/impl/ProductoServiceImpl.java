@@ -1,19 +1,23 @@
 package com.api.adm.service.impl;
 
 import com.api.adm.entity.Producto;
+import com.api.adm.exception.ResourceNotFoundException;
 import com.api.adm.repository.ProductoRepository;
 import com.api.adm.service.ProductoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
 public class ProductoServiceImpl implements ProductoService {
 
+    private final ProductoRepository productoRepository;
+
     @Autowired
-    private ProductoRepository productoRepository;
+    public ProductoServiceImpl(ProductoRepository productoRepository) {
+        this.productoRepository = productoRepository;
+    }
 
     @Override
     public List<Producto> obtenerTodosLosProductos() {
@@ -23,7 +27,7 @@ public class ProductoServiceImpl implements ProductoService {
     @Override
     public Producto obtenerProductoPorId(Long id) {
         return productoRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Producto no encontrado con el ID: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Producto no encontrado con id " + id));
     }
 
     @Override
@@ -38,6 +42,7 @@ public class ProductoServiceImpl implements ProductoService {
         productoExistente.setCategoria(producto.getCategoria());
         productoExistente.setPrecio(producto.getPrecio());
         productoExistente.setStock(producto.getStock());
+        productoExistente.setImagenUrl(producto.getImagenUrl());
         return productoRepository.save(productoExistente);
     }
 
@@ -47,19 +52,22 @@ public class ProductoServiceImpl implements ProductoService {
     }
 
     @Override
-    @Transactional
     public void reducirStock(Long productoId, int cantidad) {
         Producto producto = obtenerProductoPorId(productoId);
-        if (producto.getStock() < cantidad) {
-            throw new IllegalArgumentException("Stock insuficiente para el producto: " + producto.getNombre());
-        }
-        producto.setStock(producto.getStock() - cantidad);
+        producto.reducirStock(cantidad);
+        productoRepository.save(producto);
+    }
+
+    @Override
+    public void aumentarStock(Long productoId, int cantidad) { // Implementación del nuevo método
+        Producto producto = obtenerProductoPorId(productoId);
+        producto.setStock(producto.getStock() + cantidad);
         productoRepository.save(producto);
     }
 
     @Override
     public List<Producto> buscarProductos(String query) {
-        return List.of();
+        return productoRepository.findByNombreContainingIgnoreCaseOrCategoriaContainingIgnoreCase(query, query);
     }
 }
 

@@ -41,14 +41,15 @@ public class CompraViewController {
     @PostMapping("/guardar")
     public String guardarCompra(@Valid @ModelAttribute("compra") Compra compra,
                                 @RequestParam("clienteId") Long clienteId,
-                                @RequestParam("productoIds") List<Long> productoIds,
-                                @RequestParam("cantidades") List<Integer> cantidades,
+                                @RequestParam(value = "productoIds", required = false) List<Long> productoIds,
+                                @RequestParam(value = "cantidades", required = false) List<Integer> cantidades,
                                 BindingResult result, Model model,
                                 RedirectAttributes redirectAttributes) {
 
-        if (result.hasErrors()) {
+        if (result.hasErrors() || productoIds == null || productoIds.isEmpty() || cantidades == null || cantidades.isEmpty()) {
             model.addAttribute("clientes", clienteService.obtenerTodosLosClientes());
             model.addAttribute("productos", productoService.obtenerTodosLosProductos());
+            model.addAttribute("error", "Debe seleccionar al menos un producto con una cantidad válida.");
             return "formulario_compras";
         }
 
@@ -75,19 +76,17 @@ public class CompraViewController {
         }
 
         compra.setDetalles(detalles);
+        compra.setCliente(clienteService.obtenerClientePorId(clienteId));
         compra.calcularTotal();
+
         compraService.guardarCompra(compra, clienteId, detalles);
         redirectAttributes.addFlashAttribute("success", "Compra realizada exitosamente.");
         return "redirect:/compras";
     }
-
-    @GetMapping
-    public String listarCompras(Model model) {
-        model.addAttribute("compras", compraService.obtenerTodasLasCompras());
-        return "redirect:/compras/nueva";
-
-    }
 }
+
+
+
 
 
 

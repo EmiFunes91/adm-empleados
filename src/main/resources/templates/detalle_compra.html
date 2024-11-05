@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Detalle de Compra</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" th:href="@{/css/custom-styles.css}">
+</head>
+<body class="bg-dark text-light">
+
+<!-- Barra de navegación -->
+<nav class="navbar navbar-expand-lg navbar-dark">
+  <div class="container">
+    <a class="navbar-brand" th:href="@{/dashboard}">Admin Panel</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item"><a class="nav-link" th:href="@{/empleados}">Empleados</a></li>
+        <li class="nav-item"><a class="nav-link" th:href="@{/cajeros}">Cajeros</a></li>
+        <li class="nav-item"><a class="nav-link" th:href="@{/usuarios}">Usuarios</a></li>
+        <li class="nav-item"><a class="nav-link" th:href="@{/productos}">Productos</a></li>
+        <li class="nav-item"><a class="nav-link" th:href="@{/clientes}">Clientes</a></li>
+        <li class="nav-item"><a class="nav-link" th:href="@{/compras}">Compras</a></li>
+        <li class="nav-item"><a class="nav-link" th:href="@{/facturacion}">Facturación</a></li>
+        <li class="nav-item"><a class="nav-link btn btn-danger text-white" th:href="@{/logout}">Cerrar Sesión</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- Contenido principal -->
+<div class="container mt-5">
+  <h1 class="text-center mb-4">Detalle de Compra</h1>
+
+  <div class="card shadow-sm bg-secondary p-4">
+    <div class="card-header bg-dark text-white text-center">
+      <h3>Información de la Compra</h3>
+    </div>
+
+    <div class="card-body">
+      <!-- Detalles de la compra -->
+      <p><strong>ID de Compra:</strong> <span th:text="${compra.id}"></span></p>
+      <p><strong>Fecha:</strong> <span th:text="${#temporals.format(compra.fecha, 'yyyy-MM-dd')}"></span></p>
+      <p><strong>Cliente:</strong> <span th:text="${compra.cliente.nombre + ' ' + compra.cliente.apellido}"></span></p>
+
+      <!-- Tabla de productos -->
+      <h4 class="mt-4">Productos Comprados</h4>
+      <table class="table table-hover table-bordered">
+        <thead class="table-dark">
+        <tr>
+          <th>Producto</th>
+          <th>Cantidad</th>
+          <th>Precio Unitario</th>
+          <th>Subtotal</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="detalle : ${compra.detalles}">
+          <td th:text="${detalle.producto.nombre}">Producto</td>
+          <td th:text="${detalle.cantidad}">Cantidad</td>
+          <td th:text="${#numbers.formatDecimal(detalle.precioUnitario, 2, 2)} + ' ARS'">Precio Unitario</td>
+          <td th:text="${#numbers.formatDecimal(detalle.subtotal, 2, 2)} + ' ARS'">Subtotal</td>
+        </tr>
+        </tbody>
+        <tfoot>
+        <tr>
+          <th colspan="3" class="text-end">Total</th>
+          <th th:text="${#numbers.formatDecimal(compra.total, 2, 2)} + ' ARS'">Total</th>
+        </tr>
+        </tfoot>
+      </table>
+
+      <!-- Botón para volver -->
+      <div class="text-center mt-4">
+        <a class="btn btn-primary" th:href="@{/compras}">Volver al Historial de Compras</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+

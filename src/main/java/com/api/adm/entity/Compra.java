@@ -2,6 +2,7 @@ package com.api.adm.entity;
 
 import jakarta.persistence.*;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 
 @Entity
@@ -13,16 +14,24 @@ public class Compra {
     @ManyToOne
     private Cliente cliente;
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<CompraDetalle> detalles;
 
     private BigDecimal total;
 
-    // Métodos para calcular el total
+    @Column(name = "fecha")
+    private LocalDate fecha;
+
+    // Constructor para inicializar la fecha con la fecha actual
+    public Compra() {
+        this.fecha = LocalDate.now();
+    }
+
+    // Método para calcular el total
     public void calcularTotal() {
         total = detalles.stream()
-                .map(CompraDetalle::getSubtotal) // Devuelve BigDecimal
-                .reduce(BigDecimal.ZERO, BigDecimal::add); // Suma usando BigDecimal
+                .map(CompraDetalle::getSubtotal)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
     // Getters y setters
@@ -58,5 +67,14 @@ public class Compra {
     public void setTotal(BigDecimal total) {
         this.total = total;
     }
+
+    public LocalDate getFecha() {
+        return fecha;
+    }
+
+    public void setFecha(LocalDate fecha) {
+        this.fecha = fecha;
+    }
 }
+
 

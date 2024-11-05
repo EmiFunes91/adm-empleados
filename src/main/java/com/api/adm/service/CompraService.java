@@ -8,5 +8,7 @@ public interface CompraService {
     Compra guardarCompra(Compra compra, Long clienteId, List<CompraDetalle> detalles);
     List<Compra> obtenerTodasLasCompras();
     Compra obtenerCompraPorId(Long id);
+    boolean eliminarCompraPorId(Long id);
 }
+
 

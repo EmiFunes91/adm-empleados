@@ -17,11 +17,17 @@ function agregarProducto(element) {
     const stock = parseInt(element.getAttribute('data-stock'));
 
     const productosSeleccionados = document.getElementById('productosSeleccionados');
-    const nuevoProducto = document.createElement('tr');
 
+    if (document.querySelector(`#productosSeleccionados input[name="productoIds"][value="${id}"]`)) {
+        alert("Este producto ya está seleccionado.");
+        return;
+    }
+
+    const nuevoProducto = document.createElement('tr');
     nuevoProducto.innerHTML = `
         <td>${nombre}</td>
-        <td><input type="number" value="1" min="1" max="${stock}" onchange="actualizarSubtotal(this, ${precio})"></td>
+        <td><input type="hidden" name="productoIds" value="${id}">
+            <input type="number" name="cantidades" value="1" min="1" max="${stock}" onchange="actualizarSubtotal(this, ${precio})"></td>
         <td>$${precio.toFixed(2)}</td>
         <td>$<span>${precio.toFixed(2)}</span></td>
         <td><button type="button" class="btn btn-danger btn-sm" onclick="eliminarProducto(this)">Eliminar</button></td>
@@ -45,6 +51,8 @@ function eliminarProducto(button) {
 function actualizarTotal() {
     const subtotales = document.querySelectorAll('#productosSeleccionados tr td:nth-child(4) span');
     let total = Array.from(subtotales).reduce((acc, subtotal) => acc + parseFloat(subtotal.textContent), 0);
-    document.getElementById('total').value = `$${total.toFixed(2)}`;
+    document.getElementById('total').value = total.toFixed(2); // Sin el símbolo '$'
 }
+
+
 

@@ -63,6 +63,8 @@
                     <th>ID</th>
                     <th>Cliente</th>
                     <th>Fecha</th>
+                    <th>Producto</th>
+                    <th>Cantidad</th>
                     <th>Total</th>
                     <th>Acciones</th>
                 </tr>
@@ -71,10 +73,23 @@
                 <tr th:each="compra : ${compras}">
                     <td th:text="${compra.id}">ID</td>
                     <td th:text="${compra.cliente.nombre + ' ' + compra.cliente.apellido}">Cliente</td>
-                    <td th:text="${compra.fecha}">Fecha</td>
+                    <td th:text="${#temporals.format(compra.fecha, 'yyyy-MM-dd')}">Fecha</td>
+                    <td>
+                        <div th:each="detalle : ${compra.detalles}">
+                            <span th:text="${detalle.producto.nombre}"></span><br>
+                        </div>
+                    </td>
+                    <td>
+                        <div th:each="detalle : ${compra.detalles}">
+                            <span th:text="${detalle.cantidad}"></span><br>
+                        </div>
+                    </td>
                     <td th:text="${#numbers.formatDecimal(compra.total, 1, 2)}">Total</td>
                     <td>
                         <a class="btn btn-primary btn-sm me-1" th:href="@{/compras/detalle/{id}(id=${compra.id})}">Ver Detalles</a>
+                        <form th:action="@{/compras/eliminar/{id}(id=${compra.id})}" method="post" class="d-inline">
+                            <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
+                        </form>
                     </td>
                 </tr>
                 </tbody>

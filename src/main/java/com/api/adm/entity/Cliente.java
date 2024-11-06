@@ -43,9 +43,6 @@ public class Cliente {
     private List<Factura> facturas;
 
     // Getters y setters
-    // Constructor por defecto y parametrizado
-
-
     public Long getId() {
         return id;
     }
@@ -54,51 +51,51 @@ public class Cliente {
         this.id = id;
     }
 
-    public @NotBlank(message = "El nombre es obligatorio") String getNombre() {
+    public String getNombre() {
         return nombre;
     }
 
-    public void setNombre(@NotBlank(message = "El nombre es obligatorio") String nombre) {
+    public void setNombre(String nombre) {
         this.nombre = nombre;
     }
 
-    public @NotBlank(message = "El apellido es obligatorio") String getApellido() {
+    public String getApellido() {
         return apellido;
     }
 
-    public void setApellido(@NotBlank(message = "El apellido es obligatorio") String apellido) {
+    public void setApellido(String apellido) {
         this.apellido = apellido;
     }
 
-    public @NotNull(message = "El DNI es obligatorio") @Pattern(regexp = "\\d{8}", message = "El DNI debe tener 8 dígitos") String getDni() {
+    public String getDni() {
         return dni;
     }
 
-    public void setDni(@NotNull(message = "El DNI es obligatorio") @Pattern(regexp = "\\d{8}", message = "El DNI debe tener 8 dígitos") String dni) {
+    public void setDni(String dni) {
         this.dni = dni;
     }
 
-    public @NotBlank(message = "El teléfono es obligatorio") @Pattern(regexp = "\\d{10,15}", message = "El teléfono debe tener entre 10 y 15 dígitos") String getTelefono() {
+    public String getTelefono() {
         return telefono;
     }
 
-    public void setTelefono(@NotBlank(message = "El teléfono es obligatorio") @Pattern(regexp = "\\d{10,15}", message = "El teléfono debe tener entre 10 y 15 dígitos") String telefono) {
+    public void setTelefono(String telefono) {
         this.telefono = telefono;
     }
 
-    public @NotBlank(message = "El correo electrónico es obligatorio") @Email(message = "El correo electrónico debe tener un formato válido") String getCorreo() {
+    public String getCorreo() {
         return correo;
     }
 
-    public void setCorreo(@NotBlank(message = "El correo electrónico es obligatorio") @Email(message = "El correo electrónico debe tener un formato válido") String correo) {
+    public void setCorreo(String correo) {
         this.correo = correo;
     }
 
-    public @NotBlank(message = "La dirección es obligatoria") String getDireccion() {
+    public String getDireccion() {
         return direccion;
     }
 
-    public void setDireccion(@NotBlank(message = "La dirección es obligatoria") String direccion) {
+    public void setDireccion(String direccion) {
         this.direccion = direccion;
     }
 
@@ -123,4 +120,5 @@ enum EstadoCliente {
     ACTIVO,
     INACTIVO
 }
+
 

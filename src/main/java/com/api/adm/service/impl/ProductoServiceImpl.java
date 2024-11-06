@@ -43,23 +43,30 @@ public class ProductoServiceImpl implements ProductoService {
         productoExistente.setPrecio(producto.getPrecio());
         productoExistente.setStock(producto.getStock());
         productoExistente.setImagenUrl(producto.getImagenUrl());
+        productoExistente.setActivo(producto.isActivo());
         return productoRepository.save(productoExistente);
     }
 
     @Override
     public void eliminarProducto(Long id) {
-        productoRepository.deleteById(id);
+        Producto producto = obtenerProductoPorId(id);
+        producto.setActivo(false);  // Marcamos el producto como inactivo
+        productoRepository.save(producto);
     }
 
     @Override
     public void reducirStock(Long productoId, int cantidad) {
         Producto producto = obtenerProductoPorId(productoId);
-        producto.reducirStock(cantidad);
-        productoRepository.save(producto);
+        if (cantidad <= producto.getStock()) {
+            producto.reducirStock(cantidad);
+            productoRepository.save(producto);
+        } else {
+            throw new IllegalArgumentException("Cantidad solicitada excede el stock disponible.");
+        }
     }
 
     @Override
-    public void aumentarStock(Long productoId, int cantidad) { // Implementación del nuevo método
+    public void aumentarStock(Long productoId, int cantidad) {
         Producto producto = obtenerProductoPorId(productoId);
         producto.setStock(producto.getStock() + cantidad);
         productoRepository.save(producto);
@@ -67,7 +74,16 @@ public class ProductoServiceImpl implements ProductoService {
 
     @Override
     public List<Producto> buscarProductos(String query) {
-        return productoRepository.findByNombreContainingIgnoreCaseOrCategoriaContainingIgnoreCase(query, query);
+        return productoRepository.findByNombreContainingIgnoreCaseOrCategoriaContainingIgnoreCaseAndActivoTrue(query, query);
+    }
+
+    @Override
+    public List<Producto> obtenerProductosActivos() {
+        return productoRepository.findByActivoTrue();
     }
 }
+
+
+
+
 

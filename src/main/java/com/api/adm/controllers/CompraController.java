@@ -14,40 +14,45 @@ import java.util.List;
 @RequestMapping("/compras")
 public class CompraController {
 
-    @Autowired
-    private CompraService compraService;
+    private final CompraService compraService;
 
-    // Método para mostrar la lista de todas las compras
+    @Autowired
+    public CompraController(CompraService compraService) {
+        this.compraService = compraService;
+    }
+
     @GetMapping
-    public String obtenerTodasLasCompras(Model model) {
-        List<Compra> compras = compraService.obtenerTodasLasCompras();
+    public String obtenerTodasLasCompras(@RequestParam(value = "query", required = false) String query, Model model) {
+        List<Compra> compras = (query != null && !query.trim().isEmpty())
+                ? compraService.buscarPorClienteOFecha(query)
+                : compraService.obtenerTodasLasCompras();
         model.addAttribute("compras", compras);
+        model.addAttribute("query", query);
         return "historial_compras";
     }
 
-    // Método para mostrar los detalles de una compra
     @GetMapping("/detalle/{id}")
     public String obtenerCompraPorId(@PathVariable Long id, Model model) {
         Compra compra = compraService.obtenerCompraPorId(id);
         if (compra == null) {
-            model.addAttribute("error", "Compra no encontrada");
-            return "redirect:/compras/historial";
+            return "redirect:/compras?error=notfound";
         }
         model.addAttribute("compra", compra);
         return "detalle_compra";
     }
 
-    // Método para eliminar una compra
     @PostMapping("/eliminar/{id}")
-    public String eliminarCompra(@PathVariable Long id, RedirectAttributes redirectAttributes) {
-        boolean eliminado = compraService.eliminarCompraPorId(id);
-        if (eliminado) {
+    public String eliminarCompra(@PathVariable("id") Long id, RedirectAttributes redirectAttributes) {
+        try {
+            compraService.eliminarCompra(id);
             redirectAttributes.addFlashAttribute("success", "Compra eliminada exitosamente.");
-        } else {
-            redirectAttributes.addFlashAttribute("error", "Compra no encontrada.");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "Error al eliminar la compra. Verifique la información.");
         }
         return "redirect:/compras";
     }
 }
+
+
 
 

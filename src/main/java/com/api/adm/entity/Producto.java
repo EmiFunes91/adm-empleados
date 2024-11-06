@@ -37,66 +37,33 @@ public class Producto {
     @Column(name = "imagen_url")
     private String imagenUrl;
 
-    // Constructor por defecto
-    public Producto() {
-    }
+    @Column(nullable = false)
+    private boolean activo = true;
 
-    public Producto(String nombre, String categoria, BigDecimal precio, Integer stock, String imagenUrl) {
-        this.nombre = nombre;
-        this.categoria = categoria;
-        this.precio = precio;
-        this.stock = stock;
-        this.imagenUrl = imagenUrl;
-    }
+    // Constructor por defecto
+    public Producto() {}
 
     // Getters y Setters
-    public Long getId() {
-        return id;
-    }
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+    public String getNombre() { return nombre; }
+    public void setNombre(String nombre) { this.nombre = nombre; }
 
-    public String getNombre() {
-        return nombre;
-    }
+    public String getCategoria() { return categoria; }
+    public void setCategoria(String categoria) { this.categoria = categoria; }
 
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
+    public BigDecimal getPrecio() { return precio; }
+    public void setPrecio(BigDecimal precio) { this.precio = precio; }
 
-    public String getCategoria() {
-        return categoria;
-    }
+    public Integer getStock() { return stock; }
+    public void setStock(Integer stock) { this.stock = stock; }
 
-    public void setCategoria(String categoria) {
-        this.categoria = categoria;
-    }
+    public String getImagenUrl() { return imagenUrl; }
+    public void setImagenUrl(String imagenUrl) { this.imagenUrl = imagenUrl; }
 
-    public @NotNull(message = "El precio del producto es obligatorio") @Positive(message = "El precio debe ser un valor positivo") BigDecimal getPrecio() {
-        return precio;
-    }
-
-    public void setPrecio(BigDecimal precio) {
-        this.precio = precio;
-    }
-
-    public Integer getStock() {
-        return stock;
-    }
-
-    public void setStock(Integer stock) {
-        this.stock = stock;
-    }
-
-    public String getImagenUrl() {
-        return imagenUrl;
-    }
-
-    public void setImagenUrl(String imagenUrl) {
-        this.imagenUrl = imagenUrl;
-    }
+    public boolean isActivo() { return activo; }
+    public void setActivo(boolean activo) { this.activo = activo; }
 
     // Método para reducir el stock de forma segura
     public void reducirStock(int cantidad) {
@@ -119,6 +86,7 @@ public class Producto {
         return Objects.hash(id);
     }
 }
+
 
 
 

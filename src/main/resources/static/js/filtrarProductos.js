@@ -1,58 +1,85 @@
-document.getElementById('buscarProducto').addEventListener('input', filtrarProductos);
+// Simular productos cargados (si se usan datos estáticos)
+let productos = [
+    {id: 1, nombre: "Producto 1", categoria: "Categoría A", precio: 100.0, stock: 10},
+    {id: 2, nombre: "Producto 2", categoria: "Categoría B", precio: 200.0, stock: 20},
+    // Agregar más productos según sea necesario
+];
 
+// Filtrar productos por nombre o categoría
 function filtrarProductos() {
-    const query = document.getElementById('buscarProducto').value.toLowerCase();
-    const productos = document.querySelectorAll('#listaProductos li');
+    const query = document.getElementById("buscarProducto").value.toLowerCase();
+    const listaProductos = document.getElementById("listaProductos");
+    listaProductos.innerHTML = "";
 
-    productos.forEach(producto => {
-        const productoTexto = producto.textContent.toLowerCase();
-        producto.style.display = productoTexto.includes(query) ? 'block' : 'none';
+    const resultados = productos.filter(producto =>
+        producto.nombre.toLowerCase().includes(query) ||
+        producto.categoria.toLowerCase().includes(query)
+    );
+
+    resultados.forEach(producto => {
+        const item = document.createElement("li");
+        item.className = "list-group-item";
+        item.setAttribute("data-id", producto.id);
+        item.setAttribute("data-precio", producto.precio);
+        item.setAttribute("data-stock", producto.stock);
+        item.textContent = `${producto.nombre} - $${producto.precio} (Stock: ${producto.stock})`;
+        item.onclick = () => agregarProducto(item);
+        listaProductos.appendChild(item);
     });
 }
 
-function agregarProducto(element) {
-    const id = element.getAttribute('data-id');
-    const nombre = element.textContent.split(' - $')[0];
-    const precio = parseFloat(element.getAttribute('data-precio'));
-    const stock = parseInt(element.getAttribute('data-stock'));
+// Agregar producto a la tabla de productos seleccionados
+function agregarProducto(elemento) {
+    const productoId = elemento.getAttribute("data-id");
+    const productoPrecio = parseFloat(elemento.getAttribute("data-precio"));
+    const productoStock = parseInt(elemento.getAttribute("data-stock"));
+    const productoNombre = elemento.textContent.split(" - ")[0];
 
-    const productosSeleccionados = document.getElementById('productosSeleccionados');
-
-    if (document.querySelector(`#productosSeleccionados input[name="productoIds"][value="${id}"]`)) {
-        alert("Este producto ya está seleccionado.");
+    if (productoStock <= 0) {
+        alert("El producto no tiene stock disponible.");
         return;
     }
 
-    const nuevoProducto = document.createElement('tr');
-    nuevoProducto.innerHTML = `
-        <td>${nombre}</td>
-        <td><input type="hidden" name="productoIds" value="${id}">
-            <input type="number" name="cantidades" value="1" min="1" max="${stock}" onchange="actualizarSubtotal(this, ${precio})"></td>
-        <td>$${precio.toFixed(2)}</td>
-        <td>$<span>${precio.toFixed(2)}</span></td>
-        <td><button type="button" class="btn btn-danger btn-sm" onclick="eliminarProducto(this)">Eliminar</button></td>
+    const cantidadInput = document.createElement("input");
+    cantidadInput.type = "number";
+    cantidadInput.className = "form-control me-2";
+    cantidadInput.value = 1;
+    cantidadInput.min = 1;
+    cantidadInput.max = productoStock;
+    cantidadInput.oninput = updateTotal;
+
+    const fila = document.createElement("tr");
+    fila.innerHTML = `
+        <td>${productoNombre}</td>
+        <td></td>
+        <td>$${productoPrecio.toFixed(2)}</td>
+        <td>$<span class="subtotal">${productoPrecio.toFixed(2)}</span></td>
+        <td><button class="btn btn-danger" onclick="removeProduct(this)">Eliminar</button></td>
     `;
-    productosSeleccionados.appendChild(nuevoProducto);
-    actualizarTotal();
+    fila.cells[1].appendChild(cantidadInput);
+    document.getElementById("productosSeleccionados").appendChild(fila);
+    updateTotal();
 }
 
-function actualizarSubtotal(input, precio) {
-    const cantidad = parseInt(input.value);
-    const subtotal = precio * cantidad;
-    input.parentElement.nextElementSibling.nextElementSibling.firstElementChild.textContent = subtotal.toFixed(2);
-    actualizarTotal();
+// Actualizar el total
+function updateTotal() {
+    let total = 0;
+    document.querySelectorAll("#productosSeleccionados tr").forEach(fila => {
+        const cantidad = parseInt(fila.cells[1].querySelector("input").value) || 0;
+        const precio = parseFloat(fila.cells[2].textContent.replace("$", "")) || 0;
+        const subtotal = cantidad * precio;
+        fila.querySelector(".subtotal").textContent = subtotal.toFixed(2);
+        total += subtotal;
+    });
+    document.getElementById("total").value = total.toFixed(2);
 }
 
-function eliminarProducto(button) {
-    button.closest('tr').remove();
-    actualizarTotal();
+// Eliminar producto
+function removeProduct(button) {
+    button.closest("tr").remove();
+    updateTotal();
 }
 
-function actualizarTotal() {
-    const subtotales = document.querySelectorAll('#productosSeleccionados tr td:nth-child(4) span');
-    let total = Array.from(subtotales).reduce((acc, subtotal) => acc + parseFloat(subtotal.textContent), 0);
-    document.getElementById('total').value = total.toFixed(2); // Sin el símbolo '$'
-}
 
 
 

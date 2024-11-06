@@ -3,6 +3,7 @@ package com.api.adm.entity;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -15,12 +16,18 @@ public class Compra {
     private Cliente cliente;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<CompraDetalle> detalles;
+    private List<CompraDetalle> detalles = new ArrayList<>();
 
     private BigDecimal total;
 
     @Column(name = "fecha")
     private LocalDate fecha;
+
+    @Transient
+    private Long nuevoProductoId;
+
+    @Transient
+    private Integer cantidad;
 
     // Constructor para inicializar la fecha con la fecha actual
     public Compra() {
@@ -75,6 +82,23 @@ public class Compra {
     public void setFecha(LocalDate fecha) {
         this.fecha = fecha;
     }
+
+    public Long getNuevoProductoId() {
+        return nuevoProductoId;
+    }
+
+    public void setNuevoProductoId(Long nuevoProductoId) {
+        this.nuevoProductoId = nuevoProductoId;
+    }
+
+    public Integer getCantidad() {
+        return cantidad;
+    }
+
+    public void setCantidad(Integer cantidad) {
+        this.cantidad = cantidad;
+    }
 }
+
 
 

@@ -22,43 +22,25 @@ public class ProductoController {
     @Autowired
     private DtoConverterService dtoConverterService;
 
-    // Obtener todos los productos
+    // Obtener todos los productos activos
     @GetMapping
     @PreAuthorize("hasRole('ADMIN') or hasRole('USER') or hasRole('EMPLEADO')")
     public List<ProductoDTO> obtenerTodosLosProductos() {
-        return productoService.obtenerTodosLosProductos().stream()
+        return productoService.obtenerProductosActivos().stream()
                 .map(dtoConverterService::convertirAProductoDTO)
                 .collect(Collectors.toList());
     }
 
-    // Obtener producto por ID
-    @GetMapping("/{id}")
+    // Búsqueda de productos activos por nombre o categoría (AJAX)
+    @GetMapping("/buscar")
     @PreAuthorize("hasRole('ADMIN') or hasRole('USER') or hasRole('EMPLEADO')")
-    public ResponseEntity<ProductoDTO> obtenerProductoPorId(@PathVariable Long id) {
-        Producto producto = productoService.obtenerProductoPorId(id);
-        ProductoDTO productoDTO = dtoConverterService.convertirAProductoDTO(producto);
-        return ResponseEntity.ok(productoDTO);
+    public List<ProductoDTO> buscarProductos(@RequestParam String query) {
+        return productoService.buscarProductos(query).stream()
+                .map(dtoConverterService::convertirAProductoDTO)
+                .collect(Collectors.toList());
     }
 
-    // Guardar producto
-    @PostMapping
-    @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
-    public ProductoDTO guardarProducto(@RequestBody ProductoDTO productoDTO) {
-        Producto producto = dtoConverterService.convertirAProducto(productoDTO);
-        Producto nuevoProducto = productoService.guardarProducto(producto);
-        return dtoConverterService.convertirAProductoDTO(nuevoProducto);
-    }
-
-    // Actualizar producto
-    @PutMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
-    public ProductoDTO actualizarProducto(@PathVariable Long id, @RequestBody ProductoDTO productoDTO) {
-        Producto producto = dtoConverterService.convertirAProducto(productoDTO);
-        Producto productoActualizado = productoService.actualizarProducto(id, producto);
-        return dtoConverterService.convertirAProductoDTO(productoActualizado);
-    }
-
-    // Eliminar producto
+    // Eliminar producto (borrado lógico)
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> eliminarProducto(@PathVariable Long id) {
@@ -66,6 +48,8 @@ public class ProductoController {
         return ResponseEntity.noContent().build();
     }
 }
+
+
 
 
 

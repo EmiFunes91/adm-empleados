@@ -9,6 +9,7 @@ import com.api.adm.repository.ProductoRepository;
 import com.api.adm.service.CompraService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import java.util.List;
 
 @Service
@@ -36,25 +37,39 @@ public class CompraServiceImpl implements CompraService {
     }
 
     @Override
+    public List<Compra> buscarPorClienteOFecha(String query) {
+        return compraRepository.findByClienteOrFechaContainingIgnoreCase(query);
+    }
+
+    @Override
     public Compra obtenerCompraPorId(Long id) {
         return compraRepository.findByIdWithDetalles(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Compra no encontrada con id " + id));
     }
 
     @Override
-    public boolean eliminarCompraPorId(Long id) {
-        if (compraRepository.existsById(id)) {
-            Compra compra = compraRepository.findByIdWithDetalles(id).orElseThrow(() -> new ResourceNotFoundException("Compra no encontrada con id " + id));
-            // Incrementar el stock de cada producto en los detalles de la compra
-            for (CompraDetalle detalle : compra.getDetalles()) {
-                Producto producto = detalle.getProducto();
-                producto.setStock(producto.getStock() + detalle.getCantidad());
-                productoRepository.save(producto);
-            }
-            compraRepository.deleteById(id);
-            return true;
+    public Compra actualizarCompra(Long id, Compra compraActualizada) {
+        Compra compraExistente = compraRepository.findByIdWithDetalles(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Compra no encontrada con id " + id));
+
+        compraExistente.setDetalles(compraActualizada.getDetalles());
+        compraExistente.calcularTotal();
+
+        return compraRepository.save(compraExistente);
+    }
+
+    @Override
+    public void eliminarCompra(Long id) {
+        Compra compra = compraRepository.findByIdWithDetalles(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Compra no encontrada con id " + id));
+
+        for (CompraDetalle detalle : compra.getDetalles()) {
+            Producto producto = detalle.getProducto();
+            producto.setStock(producto.getStock() + detalle.getCantidad());
+            productoRepository.save(producto);
         }
-        return false;
+
+        compraRepository.deleteById(id);
     }
 }
 

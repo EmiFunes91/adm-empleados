@@ -10,7 +10,6 @@
 <body class="bg-dark text-light">
 
 <!-- Barra de navegación -->
-<!-- Barra de navegación -->
 <nav class="navbar navbar-expand-lg navbar-dark">
   <div class="container">
     <a class="navbar-brand" th:href="@{/dashboard}">Admin Panel</a>
@@ -19,30 +18,14 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav ms-auto">
-        <li class="nav-item">
-          <a class="nav-link" th:href="@{/empleados}">Empleados</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" th:href="@{/cajeros}">Cajeros</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" th:href="@{/usuarios}">Usuarios</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" th:href="@{/productos}">Productos</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" th:href="@{/clientes}">Clientes</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" th:href="@{/compras}">Compras</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" th:href="@{/facturacion}">Facturación</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link btn btn-danger text-white" th:href="@{/logout}">Cerrar Sesión</a>
-        </li>
+        <li class="nav-item"><a class="nav-link" th:href="@{/empleados}">Empleados</a></li>
+        <li class="nav-item"><a class="nav-link" th:href="@{/cajeros}">Cajeros</a></li>
+        <li class="nav-item"><a class="nav-link" th:href="@{/usuarios}">Usuarios</a></li>
+        <li class="nav-item"><a class="nav-link" th:href="@{/productos}">Productos</a></li>
+        <li class="nav-item"><a class="nav-link" th:href="@{/clientes}">Clientes</a></li>
+        <li class="nav-item"><a class="nav-link" th:href="@{/compras}">Compras</a></li>
+        <li class="nav-item"><a class="nav-link" th:href="@{/facturacion}">Facturación</a></li>
+        <li class="nav-item"><a class="nav-link btn btn-danger text-white" th:href="@{/logout}">Cerrar Sesión</a></li>
       </ul>
     </div>
   </div>
@@ -58,7 +41,6 @@
 
     <div class="card-body">
       <form th:action="@{/compras/guardar}" th:object="${compra}" method="post">
-        <!-- Selección de Cliente -->
         <div class="mb-3">
           <label for="cliente" class="form-label">Cliente</label>
           <select id="cliente" name="clienteId" class="form-select" required>
@@ -69,21 +51,13 @@
 
         <!-- Búsqueda de Productos -->
         <div class="mb-3">
-          <label for="buscarProducto" class="form-label">Buscar Producto</label>
+          <label for="buscarProducto" class="form-label">Buscar Producto (por nombre o categoría)</label>
           <input type="text" id="buscarProducto" class="form-control" placeholder="Escriba para buscar..." oninput="filtrarProductos()">
           <ul class="list-group mt-2" id="listaProductos">
-            <!-- Los productos se mostrarán dinámicamente aquí -->
-            <li class="list-group-item" th:each="producto : ${productos}"
-                th:data-id="${producto.id}"
-                th:data-precio="${producto.precio}"
-                th:data-stock="${producto.stock}"
-                onclick="agregarProducto(this)"
-                th:text="${producto.nombre} + ' - $' + ${producto.precio} + ' (Stock: ' + ${producto.stock} + ')'">
-            </li>
+            <!-- Productos se mostrarán aquí después de la búsqueda -->
           </ul>
         </div>
 
-        <!-- Tabla de Productos Seleccionados -->
         <div class="mb-3">
           <h4>Productos Seleccionados</h4>
           <table class="table table-hover table-bordered">
@@ -97,18 +71,15 @@
             </tr>
             </thead>
             <tbody id="productosSeleccionados">
-            <!-- Detalles de los productos agregados -->
             </tbody>
           </table>
         </div>
 
-        <!-- Total -->
         <div class="mb-3">
           <label for="total" class="form-label">Total</label>
           <input type="text" id="total" th:field="*{total}" class="form-control" readonly />
         </div>
 
-        <!-- Botón de Registro de Compra -->
         <div class="d-grid">
           <button type="submit" class="btn btn-primary">Registrar Compra</button>
         </div>
@@ -117,7 +88,7 @@
   </div>
 </div>
 
-<script src="/js/filtrarProductos.js"></script> <!-- Script de filtro -->
+<script src="/js/filtrarProductos.js"></script> <!-- Script actualizado -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

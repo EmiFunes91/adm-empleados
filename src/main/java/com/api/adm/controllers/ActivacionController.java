@@ -25,5 +25,6 @@ public class ActivacionController {
         }
         return "login"; // Redirige a la página de login
     }
+
 }
 

@@ -44,9 +44,10 @@ public class RegistroController {
 
         // Enviar correo a soporte para la verificación
         String asunto = "Nueva solicitud de registro";
-        String mensaje = "El usuario " + registroUsuarioDTO.getUsername() + " ha solicitado registrarse. "
-                + "Por favor, revisa la solicitud.";
-        emailService.enviarEmailDeConfirmacion("funesapps.soporte@gmail.com", asunto, mensaje);
+        String mensaje = "El usuario " + registroUsuarioDTO.getUsername() + " ha solicitado registrarse. " +
+                "Por favor, verifica la cuenta haciendo clic en el siguiente enlace:\n" +
+                "http://localhost:8080/activacion/" + nuevoUsuario.getId(); // Enlace para activar cuenta
+        emailService.enviarEmailDeConfirmacion("soporte.funesapps@gmail.com", asunto, mensaje);
 
         return "redirect:/crear-cuenta?success=registered"; // Redirigir a la misma página con un mensaje de éxito
     }

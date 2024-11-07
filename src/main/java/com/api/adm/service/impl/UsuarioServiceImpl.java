@@ -81,7 +81,6 @@ public class UsuarioServiceImpl implements UsuarioService {
         emailService.enviarEmailDeConfirmacion("soporte.funesapps@gmail.com", asunto, mensaje); // Enviar al soporte
     }
 
-
     @Override
     public List<Usuario> obtenerTodosLosUsuarios() {
         return usuarioRepository.findAll();
@@ -190,8 +189,8 @@ public class UsuarioServiceImpl implements UsuarioService {
 
         usuarioRepository.save(usuario);
     }
-
 }
+
 
 
 

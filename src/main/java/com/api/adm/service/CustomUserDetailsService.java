@@ -24,6 +24,11 @@ public class CustomUserDetailsService implements UserDetailsService {
         Usuario usuario = usuarioRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado: " + username));
 
+        // Verificar si la cuenta está activa
+        if (!usuario.isActivo()) {
+            throw new RuntimeException("Cuenta no activada. Verifique su correo electrónico.");
+        }
+
         // Loguear los detalles del usuario
         System.out.println("Usuario encontrado: " + usuario.getUsername());
         System.out.println("Roles: " + usuario.getRoles());
@@ -41,6 +46,7 @@ public class CustomUserDetailsService implements UserDetailsService {
         );
     }
 }
+
 
 
 

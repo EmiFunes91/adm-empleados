@@ -23,7 +23,7 @@ public class SecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/crear-cuenta", "/login", "/logout", "/css/**", "/js/**").permitAll() // Permitir acceso a estas rutas
+                        .requestMatchers("/", "/crear-cuenta", "/login", "/logout", "/css/**", "/js/**", "/activacion/**").permitAll() // Permitir acceso a estas rutas
                         .anyRequest().authenticated() // Cualquier otra solicitud requiere autenticación
                 )
                 .formLogin(form -> form

@@ -8,8 +8,8 @@ import com.api.adm.service.UsuarioService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -42,7 +42,7 @@ public class UsuarioViewController {
         model.addAttribute("usuarioDTO", new UsuarioDTO());
         List<Role> rolesDisponibles = roleService.obtenerTodosLosRoles();
         model.addAttribute("roles", rolesDisponibles);
-        return "registro";
+        return "registro"; // Vista para registro
     }
 
     @PostMapping("/guardar")
@@ -63,6 +63,27 @@ public class UsuarioViewController {
 
         usuarioService.registrarUsuario(usuarioDTO);
         return "redirect:/usuarios?success=created";
+    }
+
+    @GetMapping("/crear-cuenta")
+    public String mostrarFormularioCrearCuenta(Model model) {
+        model.addAttribute("usuarioDTO", new UsuarioDTO());
+        return "crear_cuenta"; // Vista para crear cuenta
+    }
+
+    @PostMapping("/crear-cuenta")
+    public String crearCuenta(@Valid @ModelAttribute("usuarioDTO") UsuarioDTO usuarioDTO, BindingResult result, Model model) {
+        if (result.hasErrors()) {
+            return "crear_cuenta"; // Retornar a la vista de creación en caso de error
+        }
+
+        try {
+            usuarioService.crearCuentaUsuario(usuarioDTO);
+            return "redirect:/login?success=created"; // Redirigir a login con mensaje de éxito
+        } catch (RuntimeException e) {
+            model.addAttribute("error", e.getMessage());
+            return "crear_cuenta"; // Retornar a la vista de creación con el mensaje de error
+        }
     }
 
     @GetMapping("/editar/{id}")
@@ -95,6 +116,8 @@ public class UsuarioViewController {
         return "redirect:/usuarios?success=deleted";
     }
 }
+
+
 
 
 

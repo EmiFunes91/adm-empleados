@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Crear Cuenta</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" th:href="@{/css/custom-styles.css}">
+  <style>
+    /* Estilo para fondo dinámico */
+    body {
+        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+        background-size: cover;
+        background-position: center;
+        min-height: 100vh;
+    }
+
+    /* Estilo para el contenedor del formulario */
+    .login-container {
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        padding: 40px;
+        border-radius: 15px;
+        box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.2);
+        max-width: 500px; /* Aumentamos el ancho máximo */
+        width: 100%;
+    }
+
+    /* Estilo de los campos */
+    .form-control {
+        background: rgba(255, 255, 255, 0.2);
+        border: none;
+        color: white;
+    }
+
+    .form-control::placeholder {
+        color: #ddd;
+    }
+
+    .form-control:focus {
+        box-shadow: none;
+        background: rgba(255, 255, 255, 0.3);
+        border-color: #00b4d8;
+    }
+
+    /* Estilo del botón */
+    .btn-primary {
+        background-color: #00b4d8;
+        border: none;
+    }
+
+    .btn-primary:hover {
+        background-color: #0096c7;
+    }
+  </style>
+</head>
+<body class="d-flex justify-content-center align-items-center">
+
+<div class="login-container">
+  <h2 class="text-center text-light mb-4">Crear Cuenta</h2>
+
+  <div th:if="${param.error}" class="alert alert-danger">[[${error}]]</div>
+
+  <form th:action="@{/crear-cuenta}" method="post" th:object="${registroUsuarioDTO}">
+    <div class="mb-3">
+      <label for="username" class="form-label text-light">Nombre de Usuario:</label>
+      <input type="text" id="username" th:field="*{username}" class="form-control" placeholder="Ingresa tu usuario" required>
+      <div th:if="${#fields.hasErrors('username')}" class="text-danger">
+        <small th:errors="*{username}"></small>
+      </div>
+    </div>
+    <div class="mb-3">
+      <label for="email" class="form-label text-light">Correo Electrónico:</label>
+      <input type="email" id="email" th:field="*{email}" class="form-control" placeholder="Ingresa tu correo" required>
+      <div th:if="${#fields.hasErrors('email')}" class="text-danger">
+        <small th:errors="*{email}"></small>
+      </div>
+    </div>
+    <div class="mb-3">
+      <label for="password" class="form-label text-light">Contraseña:</label>
+      <input type="password" id="password" th:field="*{password}" class="form-control" placeholder="Ingresa tu contraseña" required>
+      <div th:if="${#fields.hasErrors('password')}" class="text-danger">
+        <small th:errors="*{password}"></small>
+      </div>
+    </div>
+    <div class="d-grid mb-3">
+      <button type="submit" class="btn btn-primary">Crear Cuenta</button>
+    </div>
+    <div class="text-center">
+      <a href="/login" class="text-light small">¿Ya tienes cuenta? Inicia sesión</a>
+    </div>
+  </form>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+
+
+
+

@@ -21,21 +21,24 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(AbstractHttpConfigurer::disable)  // Deshabilitar CSRF correctamente en Spring 6.1
+                .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/login", "/logout", "/register", "/css/**", "/js/**").permitAll() // Permitir el acceso a estas rutas
-                        .requestMatchers("/clientes/**", "/facturacion/**").permitAll()  // Permitir acceso a rutas de clientes y facturación
-                        .anyRequest().authenticated()  // Cualquier otra solicitud requiere autenticación
+                        .requestMatchers("/", "/crear-cuenta", "/login", "/logout", "/css/**", "/js/**").permitAll() // Permitir acceso a estas rutas
+                        .anyRequest().authenticated() // Cualquier otra solicitud requiere autenticación
                 )
                 .formLogin(form -> form
-                        .loginPage("/login")  // Página de login
-                        .defaultSuccessUrl("/dashboard", true)  // Redirigir al dashboard después del login exitoso
+                        .loginPage("/login") // Página de login
+                        .defaultSuccessUrl("/dashboard", true) // Redirigir al dashboard después del login exitoso
                         .permitAll()
                 )
                 .logout(logout -> logout
                         .permitAll()
                         .logoutUrl("/logout")
-                        .logoutSuccessUrl("/login?logout")  // Redirigir al login tras cerrar sesión
+                        .logoutSuccessUrl("/login?logout") // Redirigir al login tras cerrar sesión
+                )
+                // Redirige a /crear-cuenta cuando se accede a la página de inicio sin autenticación
+                .exceptionHandling(exception -> exception
+                        .authenticationEntryPoint((request, response, authException) -> response.sendRedirect("/crear-cuenta"))
                 );
 
         return http.build();
@@ -46,6 +49,10 @@ public class SecurityConfig {
         return authenticationConfiguration.getAuthenticationManager();
     }
 }
+
+
+
+
 
 
 

@@ -13,6 +13,7 @@ public class Usuario {
     private String username;
     private String password;
     private String email;
+    private boolean activo;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
@@ -62,7 +63,16 @@ public class Usuario {
     public void setRoles(Set<Role> roles) {
         this.roles = roles;
     }
+
+    public boolean isActivo() {
+        return activo;
+    }
+
+    public void setActivo(boolean activo) {
+        this.activo = activo;
+    }
 }
+
 
 
 

@@ -3,7 +3,6 @@ function buscarProductosAJAX() {
     const productosTableBody = document.getElementById("productosTableBody");
 
     if (query === "") {
-        // Si no hay texto, recargar la página para mostrar todos los productos activos
         location.reload();
         return;
     }
@@ -26,10 +25,7 @@ function buscarProductosAJAX() {
                     <td><img src="/images/${producto.imagenUrl}" alt="Imagen del producto" width="100"></td>
                     <td>
                         <a href="/productos/editar/${producto.id}" class="btn btn-primary btn-sm me-1">Editar</a>
-                        <form action="/api/productos/${producto.id}" method="post" style="display:inline;" onsubmit="return confirm('¿Estás seguro de que deseas eliminar este producto?')">
-                            <input type="hidden" name="_method" value="delete">
-                            <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
-                        </form>
+                        <button class="btn btn-danger btn-sm" onclick="eliminarProducto(${producto.id})">Eliminar</button>
                     </td>
                 `;
                 productosTableBody.appendChild(row);
@@ -37,6 +33,27 @@ function buscarProductosAJAX() {
         })
         .catch(error => console.error("Error al buscar productos:", error));
 }
+
+function eliminarProducto(id) {
+    if (!confirm('¿Estás seguro de que deseas eliminar este producto?')) return;
+
+    fetch(`/api/productos/${id}`, {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => {
+        if (!response.ok) throw new Error("Error al eliminar el producto");
+        return response.text();
+    })
+    .then(() => {
+        alert("Producto eliminado correctamente");
+        buscarProductosAJAX(); // Para actualizar la lista tras la eliminación
+    })
+    .catch(error => console.error("Error al eliminar el producto:", error));
+}
+
 
 
 

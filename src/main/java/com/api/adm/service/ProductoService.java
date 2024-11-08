@@ -8,12 +8,14 @@ public interface ProductoService {
     Producto obtenerProductoPorId(Long id);
     Producto guardarProducto(Producto producto);
     Producto actualizarProducto(Long id, Producto producto);
-    void eliminarProducto(Long id);  // Marcado lógico como inactivo
+    void eliminarProducto(Long id);
     void reducirStock(Long productoId, int cantidad);
     void aumentarStock(Long productoId, int cantidad);
-    List<Producto> buscarProductos(String query);  // Solo productos activos en la búsqueda
+    List<Producto> buscarProductos(String query);
     List<Producto> obtenerProductosActivos();
 }
+
+
 
 
 

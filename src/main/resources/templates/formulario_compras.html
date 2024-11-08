@@ -9,7 +9,6 @@
 </head>
 <body class="bg-dark text-light">
 
-<!-- Barra de navegación -->
 <nav class="navbar navbar-expand-lg navbar-dark">
   <div class="container">
     <a class="navbar-brand" th:href="@{/dashboard}">Admin Panel</a>
@@ -33,12 +32,10 @@
 
 <div class="container mt-5">
   <h1 class="text-center mb-4">Registrar Nueva Compra</h1>
-
   <div class="card shadow-sm bg-secondary p-4">
     <div class="card-header bg-dark text-white text-center">
       <h3>Detalles de la Compra</h3>
     </div>
-
     <div class="card-body">
       <form th:action="@{/compras/guardar}" th:object="${compra}" method="post">
         <div class="mb-3">
@@ -49,13 +46,10 @@
           </select>
         </div>
 
-        <!-- Búsqueda de Productos -->
         <div class="mb-3">
-          <label for="buscarProducto" class="form-label">Buscar Producto (por nombre o categoría)</label>
-          <input type="text" id="buscarProducto" class="form-control" placeholder="Escriba para buscar..." oninput="filtrarProductos()">
-          <ul class="list-group mt-2" id="listaProductos">
-            <!-- Productos se mostrarán aquí después de la búsqueda -->
-          </ul>
+          <label for="buscarProducto" class="form-label">Buscar Producto</label>
+          <input type="text" id="buscarProducto" class="form-control" placeholder="Buscar producto..." oninput="filtrarProductos()">
+          <ul class="list-group mt-2" id="listaProductos"></ul>
         </div>
 
         <div class="mb-3">
@@ -70,8 +64,7 @@
               <th>Acciones</th>
             </tr>
             </thead>
-            <tbody id="productosSeleccionados">
-            </tbody>
+            <tbody id="productosSeleccionados"></tbody>
           </table>
         </div>
 
@@ -79,6 +72,9 @@
           <label for="total" class="form-label">Total</label>
           <input type="text" id="total" th:field="*{total}" class="form-control" readonly />
         </div>
+
+        <!-- Inputs ocultos para productoIds y cantidades -->
+        <div id="hiddenFieldsContainer"></div>
 
         <div class="d-grid">
           <button type="submit" class="btn btn-primary">Registrar Compra</button>
@@ -88,10 +84,11 @@
   </div>
 </div>
 
-<script src="/js/filtrarProductos.js"></script> <!-- Script actualizado -->
+<script src="/js/compra-validation.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
+
 
 
 

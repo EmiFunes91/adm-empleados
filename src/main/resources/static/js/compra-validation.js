@@ -1,76 +1,97 @@
-// Almacenar productos seleccionados
-const selectedProducts = new Set();
-let totalAmount = parseFloat(document.getElementById("totalAmount").textContent);
+const selectedProducts = new Map();
+let totalAmount = 0;
 
-// Actualizar el total cuando cambia la cantidad
+function updateHiddenFields() {
+    const container = document.getElementById("hiddenFieldsContainer");
+    container.innerHTML = "";
+
+    selectedProducts.forEach((cantidad, id) => {
+        const productIdInput = document.createElement("input");
+        productIdInput.type = "hidden";
+        productIdInput.name = "productoIds";
+        productIdInput.value = id;
+        container.appendChild(productIdInput);
+
+        const cantidadInput = document.createElement("input");
+        cantidadInput.type = "hidden";
+        cantidadInput.name = "cantidades";
+        cantidadInput.value = cantidad;
+        container.appendChild(cantidadInput);
+    });
+}
+
 function updateTotal() {
     totalAmount = 0;
     document.querySelectorAll(".product-quantity").forEach((input) => {
         const cantidad = parseInt(input.value);
         const precio = parseFloat(input.getAttribute("data-price"));
+        const subtotalCell = input.closest("tr").querySelector(".subtotal");
+        const productId = input.closest("tr").getAttribute("data-product-id");
+
         if (!isNaN(cantidad) && !isNaN(precio)) {
-            totalAmount += cantidad * precio;
+            const subtotal = cantidad * precio;
+            subtotalCell.textContent = subtotal.toFixed(2);
+            totalAmount += subtotal;
+            selectedProducts.set(productId, cantidad);
         }
     });
-    document.getElementById("totalAmount").textContent = totalAmount.toFixed(2);
+    document.getElementById("total").value = totalAmount.toFixed(2);
+    updateHiddenFields();
 }
 
-// Validar que el producto nuevo no esté ya seleccionado
-function validateNewProductSelection() {
-    const newProductSelect = document.getElementById("nuevoProductoId");
-    const selectedProductId = newProductSelect.value;
-
-    if (selectedProducts.has(selectedProductId)) {
-        alert("El producto ya está en la compra. Modifique la cantidad directamente.");
-        newProductSelect.value = "";
-    }
-}
-
-// Agregar producto nuevo a la lista
-function addProduct() {
-    const newProductSelect = document.getElementById("nuevoProductoId");
-    const selectedProductId = newProductSelect.value;
-    const selectedProductName = newProductSelect.options[newProductSelect.selectedIndex].text;
-    const maxStock = parseInt(newProductSelect.options[newProductSelect.selectedIndex].getAttribute("data-stock"));
-    const precio = parseFloat(newProductSelect.options[newProductSelect.selectedIndex].getAttribute("data-price"));
-
-    if (!selectedProductId) {
-        alert("Seleccione un producto válido.");
+function addProduct(product) {
+    if (selectedProducts.has(product.id)) {
+        alert("El producto ya está en la lista. Modifique la cantidad directamente.");
         return;
     }
 
-    selectedProducts.add(selectedProductId);
+    const productList = document.getElementById("productosSeleccionados");
+    const row = document.createElement("tr");
+    row.setAttribute("data-product-id", product.id);
 
-    const productList = document.getElementById("productList");
-    const productItem = document.createElement("div");
-    productItem.classList.add("d-flex", "mb-2", "align-items-center", "product-item");
-    productItem.innerHTML = `
-        <input type="text" class="form-control me-2" value="${selectedProductName}" readonly>
-        <input type="number" class="form-control me-2 product-quantity" min="1" max="${maxStock}"
-               value="1" data-price="${precio}" oninput="updateTotal()" required>
-        <button type="button" class="btn btn-danger" onclick="removeProduct(this)">Eliminar</button>
+    row.innerHTML = `
+        <td>${product.nombre}</td>
+        <td><input type="number" class="product-quantity form-control" min="1" max="${product.stock}"
+                   value="1" data-price="${product.precio}" oninput="updateTotal()"></td>
+        <td>${product.precio.toFixed(2)}</td>
+        <td class="subtotal">${product.precio.toFixed(2)}</td>
+        <td><button type="button" class="btn btn-danger" onclick="removeProduct(this, '${product.id}')">Eliminar</button></td>
     `;
 
-    productList.appendChild(productItem);
-    updateTotal();
-
-    newProductSelect.value = "";
-}
-
-// Remover producto
-function removeProduct(button) {
-    const productItem = button.closest(".product-item");
-    const productName = productItem.querySelector("input[type='text']").value;
-
-    for (const option of document.getElementById("nuevoProductoId").options) {
-        if (option.text === productName) {
-            selectedProducts.delete(option.value);
-            break;
-        }
-    }
-
-    productItem.remove();
+    productList.appendChild(row);
+    selectedProducts.set(product.id, 1);
     updateTotal();
 }
+
+function removeProduct(button, productId) {
+    const row = button.closest("tr");
+    row.remove();
+    selectedProducts.delete(productId);
+    updateTotal();
+}
+
+function filtrarProductos() {
+    const query = document.getElementById("buscarProducto").value;
+    if (query.trim() === "") return;
+
+    fetch(`/api/productos/buscar?query=${query}`)
+        .then(response => response.json())
+        .then(data => {
+            const listaProductos = document.getElementById("listaProductos");
+            listaProductos.innerHTML = "";
+
+            data.forEach(producto => {
+                const item = document.createElement("li");
+                item.className = "list-group-item";
+                item.textContent = `${producto.nombre} - ${producto.categoria}`;
+                item.onclick = () => addProduct(producto);
+                listaProductos.appendChild(item);
+            });
+        })
+        .catch(console.error);
+}
+
+
+
 
 

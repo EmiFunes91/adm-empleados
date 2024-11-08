@@ -50,7 +50,7 @@ public class ProductoServiceImpl implements ProductoService {
     @Override
     public void eliminarProducto(Long id) {
         Producto producto = obtenerProductoPorId(id);
-        producto.setActivo(false);  // Marcamos el producto como inactivo
+        producto.setActivo(false);
         productoRepository.save(producto);
     }
 
@@ -74,7 +74,7 @@ public class ProductoServiceImpl implements ProductoService {
 
     @Override
     public List<Producto> buscarProductos(String query) {
-        return productoRepository.findByNombreContainingIgnoreCaseOrCategoriaContainingIgnoreCaseAndActivoTrue(query, query);
+        return productoRepository.findByActivoTrueAndNombreContainingIgnoreCaseOrActivoTrueAndCategoriaContainingIgnoreCase(query, query);
     }
 
     @Override
@@ -82,6 +82,8 @@ public class ProductoServiceImpl implements ProductoService {
         return productoRepository.findByActivoTrue();
     }
 }
+
+
 
 
 

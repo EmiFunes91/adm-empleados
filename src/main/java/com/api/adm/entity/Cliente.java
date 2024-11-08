@@ -26,7 +26,7 @@ public class Cliente {
     private String dni;
 
     @NotBlank(message = "El teléfono es obligatorio")
-    @Pattern(regexp = "\\d{10,15}", message = "El teléfono debe tener entre 10 y 15 dígitos")
+    @Pattern(regexp = "\\d{15,18}", message = "El teléfono debe tener entre 15 y 18 dígitos")
     private String telefono;
 
     @NotBlank(message = "El correo electrónico es obligatorio")

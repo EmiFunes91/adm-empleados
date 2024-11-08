@@ -55,15 +55,13 @@
         </div>
         <div class="card-body">
             <div th:if="${param.success == 'created'}" class="alert alert-success">Compra registrada exitosamente.</div>
-            <div th:if="${param.success == 'updated'}" class="alert alert-success">Compra actualizada exitosamente.</div>
-            <div th:if="${param.success == 'deleted'}" class="alert alert-success">Compra eliminada exitosamente.</div>
 
             <div class="mb-3 text-end">
                 <a class="btn btn-success" th:href="@{/compras/nueva}">Registrar Nueva Compra</a>
             </div>
 
             <form th:action="@{/compras}" method="get" class="d-flex mb-3">
-                <input type="text" name="query" class="form-control me-2" th:value="${query}" placeholder="Buscar por cliente o fecha (YYYY-MM-DD)">
+                <input type="text" name="query" class="form-control me-2" th:value="${query}" placeholder="Buscar por cliente o fecha">
                 <button type="submit" class="btn btn-dark">Buscar</button>
             </form>
 
@@ -99,7 +97,7 @@
                         <a class="btn btn-primary btn-sm me-1" th:href="@{/compras/detalle/{id}(id=${compra.id})}">Ver Detalles</a>
                         <a class="btn btn-warning btn-sm me-1" th:href="@{/compras/editar/{id}(id=${compra.id})}">Editar</a>
                         <form th:action="@{/compras/eliminar/{id}(id=${compra.id})}" method="post" class="d-inline">
-                            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('¿Estás seguro de que deseas eliminar esta compra?');">Eliminar</button>
+                            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('¿Estás seguro de eliminar esta compra?');">Eliminar</button>
                         </form>
                     </td>
                 </tr>

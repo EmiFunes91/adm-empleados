@@ -5,10 +5,10 @@ import com.api.adm.entity.CompraDetalle;
 import com.api.adm.entity.Producto;
 import com.api.adm.exception.ResourceNotFoundException;
 import com.api.adm.repository.CompraRepository;
-import com.api.adm.repository.ProductoRepository;
 import com.api.adm.service.CompraService;
+import com.api.adm.service.ProductoService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -16,24 +16,33 @@ import java.util.List;
 public class CompraServiceImpl implements CompraService {
 
     private final CompraRepository compraRepository;
-    private final ProductoRepository productoRepository;
+    private final ProductoService productoService;
 
-    public CompraServiceImpl(CompraRepository compraRepository, ProductoRepository productoRepository) {
+    @Autowired
+    public CompraServiceImpl(CompraRepository compraRepository, ProductoService productoService) {
         this.compraRepository = compraRepository;
-        this.productoRepository = productoRepository;
+        this.productoService = productoService;
     }
 
     @Override
     public Compra guardarCompra(Compra compra, Long clienteId, List<CompraDetalle> detalles) {
-        compra.setDetalles(detalles);
+        detalles.forEach(detalle -> {
+            productoService.reducirStock(detalle.getProducto().getId(), detalle.getCantidad());
+            detalle.calcularSubtotal();
+        });
         compra.calcularTotal();
         return compraRepository.save(compra);
     }
 
     @Override
-    @Transactional(readOnly = true)
     public List<Compra> obtenerTodasLasCompras() {
         return compraRepository.findAllWithDetalles();
+    }
+
+    @Override
+    public Compra obtenerCompraPorId(Long id) {
+        return compraRepository.findByIdWithDetalles(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Compra no encontrada"));
     }
 
     @Override
@@ -42,35 +51,34 @@ public class CompraServiceImpl implements CompraService {
     }
 
     @Override
-    public Compra obtenerCompraPorId(Long id) {
-        return compraRepository.findByIdWithDetalles(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Compra no encontrada con id " + id));
-    }
-
-    @Override
     public Compra actualizarCompra(Long id, Compra compraActualizada) {
-        Compra compraExistente = compraRepository.findByIdWithDetalles(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Compra no encontrada con id " + id));
+        Compra compraExistente = obtenerCompraPorId(id);
+        revertirStock(compraExistente);  // Revertir stock antes de la actualización
 
-        compraExistente.setDetalles(compraActualizada.getDetalles());
-        compraExistente.calcularTotal();
-
-        return compraRepository.save(compraExistente);
+        compraActualizada.getDetalles().forEach(detalle -> {
+            productoService.reducirStock(detalle.getProducto().getId(), detalle.getCantidad());
+            detalle.calcularSubtotal();
+        });
+        compraActualizada.calcularTotal();
+        return compraRepository.save(compraActualizada);
     }
 
     @Override
     public void eliminarCompra(Long id) {
-        Compra compra = compraRepository.findByIdWithDetalles(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Compra no encontrada con id " + id));
-
-        for (CompraDetalle detalle : compra.getDetalles()) {
-            Producto producto = detalle.getProducto();
-            producto.setStock(producto.getStock() + detalle.getCantidad());
-            productoRepository.save(producto);
-        }
-
+        Compra compra = obtenerCompraPorId(id);
+        revertirStock(compra);  // Revertir stock al eliminar la compra
         compraRepository.deleteById(id);
     }
+
+    @Override
+    public void revertirStock(Compra compra) {
+        compra.getDetalles().forEach(detalle ->
+                productoService.aumentarStock(detalle.getProducto().getId(), detalle.getCantidad())
+        );
+    }
+
 }
+
+
 
 

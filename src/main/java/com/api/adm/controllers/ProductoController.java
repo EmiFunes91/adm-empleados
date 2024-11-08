@@ -1,7 +1,6 @@
 package com.api.adm.controllers;
 
 import com.api.adm.dto.ProductoDTO;
-import com.api.adm.entity.Producto;
 import com.api.adm.service.ProductoService;
 import com.api.adm.service.DtoConverterService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +21,6 @@ public class ProductoController {
     @Autowired
     private DtoConverterService dtoConverterService;
 
-    // Obtener todos los productos activos
     @GetMapping
     @PreAuthorize("hasRole('ADMIN') or hasRole('USER') or hasRole('EMPLEADO')")
     public List<ProductoDTO> obtenerTodosLosProductos() {
@@ -31,16 +29,19 @@ public class ProductoController {
                 .collect(Collectors.toList());
     }
 
-    // Búsqueda de productos activos por nombre o categoría (AJAX)
     @GetMapping("/buscar")
     @PreAuthorize("hasRole('ADMIN') or hasRole('USER') or hasRole('EMPLEADO')")
-    public List<ProductoDTO> buscarProductos(@RequestParam String query) {
-        return productoService.buscarProductos(query).stream()
+    public ResponseEntity<List<ProductoDTO>> buscarProductos(@RequestParam String query) {
+        List<ProductoDTO> productos = productoService.buscarProductos(query).stream()
                 .map(dtoConverterService::convertirAProductoDTO)
                 .collect(Collectors.toList());
+        if (productos.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(productos);
     }
 
-    // Eliminar producto (borrado lógico)
+
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> eliminarProducto(@PathVariable Long id) {

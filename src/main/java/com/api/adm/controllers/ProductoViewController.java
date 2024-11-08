@@ -4,6 +4,7 @@ import com.api.adm.dto.ProductoDTO;
 import com.api.adm.entity.Producto;
 import com.api.adm.service.ProductoService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -27,26 +28,23 @@ public class ProductoViewController {
     @Autowired
     private ProductoService productoService;
 
-    // Listar productos con opción de búsqueda
     @GetMapping
     public String listarProductos(Model model, @RequestParam(value = "query", required = false) String query) {
         List<Producto> productos = (query != null && !query.isEmpty()) ?
                 productoService.buscarProductos(query) :
-                productoService.obtenerTodosLosProductos();
+                productoService.obtenerProductosActivos();
 
         model.addAttribute("productos", productos);
         model.addAttribute("query", query);
         return "productos";
     }
 
-    // Mostrar formulario de agregar producto
     @GetMapping("/nuevo")
     public String mostrarFormularioAgregar(Model model) {
         model.addAttribute("productoDTO", new ProductoDTO());
         return "agregar_producto";
     }
 
-    // Guardar producto
     @PostMapping("/guardar")
     public String guardarProducto(@Valid @ModelAttribute("productoDTO") ProductoDTO productoDTO, BindingResult result,
                                   @RequestParam("imagen") MultipartFile imagen, Model model) {
@@ -60,7 +58,6 @@ public class ProductoViewController {
         producto.setPrecio(productoDTO.getPrecio());
         producto.setStock(productoDTO.getStock());
 
-        // Manejar la imagen
         if (!imagen.isEmpty()) {
             String rutaDirectorio = "C:/Users/emili/Documents/images";
             String nombreArchivo = UUID.randomUUID() + "_" + imagen.getOriginalFilename();
@@ -88,7 +85,6 @@ public class ProductoViewController {
         return "redirect:/productos?success=created";
     }
 
-    // Mostrar formulario de edición de producto
     @GetMapping("/editar/{id}")
     public String mostrarFormularioEdicion(@PathVariable("id") Long id, Model model) {
         Producto producto = productoService.obtenerProductoPorId(id);
@@ -108,7 +104,6 @@ public class ProductoViewController {
         return "editar_producto";
     }
 
-    // Actualizar producto
     @PostMapping("/actualizar/{id}")
     public String actualizarProducto(@PathVariable Long id,
                                      @Valid @ModelAttribute("productoDTO") ProductoDTO productoDTO,
@@ -158,13 +153,14 @@ public class ProductoViewController {
         return "redirect:/productos?success=updated";
     }
 
-    // Eliminar producto
     @DeleteMapping("/eliminar/{id}")
-    public String eliminarProducto(@PathVariable Long id) {
+    @ResponseBody
+    public ResponseEntity<Void> eliminarProducto(@PathVariable Long id) {
         productoService.eliminarProducto(id);
-        return "redirect:/productos?success=deleted";
+        return ResponseEntity.noContent().build();
     }
 }
+
 
 
 

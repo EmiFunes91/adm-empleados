@@ -80,6 +80,7 @@
         <div class="mb-3">
           <label for="telefono" class="form-label">Teléfono</label>
           <input type="text" id="telefono" th:field="*{telefono}" class="form-control" required>
+          <div th:if="${#fields.hasErrors('telefono')}" th:errors="*{telefono}" class="text-danger"></div>
         </div>
 
         <!-- Correo -->

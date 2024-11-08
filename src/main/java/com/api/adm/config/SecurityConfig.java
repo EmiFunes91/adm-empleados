@@ -21,7 +21,6 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/", "/crear-cuenta", "/login", "/logout", "/css/**", "/js/**", "/activacion/**").permitAll() // Permitir acceso a estas rutas
                         .anyRequest().authenticated() // Cualquier otra solicitud requiere autenticación

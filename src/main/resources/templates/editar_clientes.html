@@ -45,35 +45,35 @@
         </div>
 
         <!-- Formulario de edición -->
-        <form th:action="@{/clientes/actualizar/{id}(id=${cliente.id})}" th:object="${cliente}" method="post">
+        <form th:action="@{/clientes/actualizar/{id}(id=${cliente.id})}" th:object="${cliente}" method="post" novalidate>
             <div class="mb-3">
                 <label for="nombre" class="form-label">Nombre:</label>
-                <input type="text" id="nombre" th:field="*{nombre}" class="form-control" required>
+                <input type="text" id="nombre" th:field="*{nombre}" class="form-control" required placeholder="Ingrese el nombre">
                 <div th:if="${#fields.hasErrors('nombre')}" class="text-danger" th:errors="*{nombre}"></div>
             </div>
             <div class="mb-3">
                 <label for="apellido" class="form-label">Apellido:</label>
-                <input type="text" id="apellido" th:field="*{apellido}" class="form-control" required>
+                <input type="text" id="apellido" th:field="*{apellido}" class="form-control" required placeholder="Ingrese el apellido">
                 <div th:if="${#fields.hasErrors('apellido')}" class="text-danger" th:errors="*{apellido}"></div>
             </div>
             <div class="mb-3">
                 <label for="dni" class="form-label">DNI:</label>
-                <input type="text" id="dni" th:field="*{dni}" class="form-control" required pattern="\\d{8}">
+                <input type="text" id="dni" th:field="*{dni}" class="form-control" required pattern="\\d{8}" placeholder="Ingrese el DNI">
                 <div th:if="${#fields.hasErrors('dni')}" class="text-danger" th:errors="*{dni}"></div>
             </div>
             <div class="mb-3">
                 <label for="telefono" class="form-label">Teléfono:</label>
-                <input type="text" id="telefono" th:field="*{telefono}" class="form-control" required pattern="\\d{10,15}">
+                <input type="text" id="telefono" th:field="*{telefono}" class="form-control" required pattern="\\d{10,15}" placeholder="Ingrese el teléfono">
                 <div th:if="${#fields.hasErrors('telefono')}" class="text-danger" th:errors="*{telefono}"></div>
             </div>
             <div class="mb-3">
                 <label for="correo" class="form-label">Correo:</label>
-                <input type="email" id="correo" th:field="*{correo}" class="form-control" required>
+                <input type="email" id="correo" th:field="*{correo}" class="form-control" required placeholder="Ingrese el correo electrónico">
                 <div th:if="${#fields.hasErrors('correo')}" class="text-danger" th:errors="*{correo}"></div>
             </div>
             <div class="mb-3">
                 <label for="direccion" class="form-label">Dirección:</label>
-                <input type="text" id="direccion" th:field="*{direccion}" class="form-control" required>
+                <input type="text" id="direccion" th:field="*{direccion}" class="form-control" required placeholder="Ingrese la dirección">
                 <div th:if="${#fields.hasErrors('direccion')}" class="text-danger" th:errors="*{direccion}"></div>
             </div>
             <div class="d-grid">
@@ -87,6 +87,9 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
+
+
+
 
 
 

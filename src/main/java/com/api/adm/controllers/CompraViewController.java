@@ -1,82 +1,137 @@
 package com.api.adm.controllers;
 
-import com.api.adm.entity.Producto;
+import com.api.adm.entity.Cliente;
 import com.api.adm.entity.Compra;
-import com.api.adm.entity.CompraDetalle;
+import com.api.adm.exception.ResourceNotFoundException;
 import com.api.adm.service.ClienteService;
-import com.api.adm.service.ProductoService;
 import com.api.adm.service.CompraService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.util.ArrayList;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Controller
 @RequestMapping("/compras")
 public class CompraViewController {
 
-    private final ClienteService clienteService;
-    private final ProductoService productoService;
     private final CompraService compraService;
+    private final ClienteService clienteService;
 
     @Autowired
-    public CompraViewController(ClienteService clienteService, ProductoService productoService, CompraService compraService) {
-        this.clienteService = clienteService;
-        this.productoService = productoService;
+    public CompraViewController(CompraService compraService, ClienteService clienteService) {
         this.compraService = compraService;
+        this.clienteService = clienteService;
+    }
+
+    @GetMapping
+    @Transactional(readOnly = true)
+    public String listarCompras(Model model) {
+        List<Compra> compras = compraService.obtenerComprasPorRangoFecha(
+                LocalDateTime.now().minusMonths(1), LocalDateTime.now()
+        );
+
+        // Forzar carga de compraDetalles para evitar LazyInitializationException
+        for (Compra compra : compras) {
+            compra.getCompraDetalles().size();  // Esto inicializa la colección
+        }
+
+        model.addAttribute("compras", compras);
+        return "compras";
     }
 
     @GetMapping("/nueva")
-    public String mostrarFormularioCompra(Model model) {
+    public String mostrarFormularioCrearCompra(Model model) {
         model.addAttribute("compra", new Compra());
         model.addAttribute("clientes", clienteService.obtenerTodosLosClientes());
-        model.addAttribute("productos", productoService.obtenerTodosLosProductos());
-        return "formulario_compras";
+        return "formulario_compra";
     }
 
     @PostMapping("/guardar")
-    public String guardarCompra(@ModelAttribute("compra") Compra compra,
-                                @RequestParam("clienteId") Long clienteId,
-                                @RequestParam(value = "productoIds", required = false) List<Long> productoIds,
-                                @RequestParam(value = "cantidades", required = false) List<Integer> cantidades,
-                                RedirectAttributes redirectAttributes) {
+    public String guardarCompra(@ModelAttribute("compra") Compra compra, @RequestParam Long clienteId) {
+        Cliente cliente = clienteService.obtenerClientePorId(clienteId);
+        compra.setCliente(cliente);
+        compra.setFechaCompra(LocalDateTime.now());
+        compraService.crearCompra(compra);
+        return "redirect:/compras?success=created";
+    }
 
-        if (productoIds == null || cantidades == null || productoIds.size() != cantidades.size()) {
-            redirectAttributes.addFlashAttribute("error", "Debe seleccionar al menos un producto y su cantidad.");
-            return "redirect:/compras/nueva";
+    @GetMapping("/editar/{id}")
+    @Transactional(readOnly = true)
+    public String mostrarFormularioEditarCompra(@PathVariable Long id, Model model) {
+        Compra compra = compraService.obtenerCompraPorId(id);
+        if (compra == null) {
+            throw new ResourceNotFoundException("Compra no encontrada");
         }
 
-        List<CompraDetalle> detalles = new ArrayList<>();
-        for (int i = 0; i < productoIds.size(); i++) {
-            Producto producto = productoService.obtenerProductoPorId(productoIds.get(i));
-            int cantidadSolicitada = cantidades.get(i);
-            if (cantidadSolicitada > producto.getStock()) {
-                redirectAttributes.addFlashAttribute("error", "Stock insuficiente para el producto " + producto.getNombre());
-                return "redirect:/compras/nueva";
-            }
-            productoService.reducirStock(producto.getId(), cantidadSolicitada);
+        // Forzar carga de detalles para evitar LazyInitializationException
+        compra.getCompraDetalles().size();
+        model.addAttribute("compra", compra);
+        model.addAttribute("clientes", clienteService.obtenerTodosLosClientes());
+        return "editar_compra";
+    }
 
-            CompraDetalle detalle = new CompraDetalle();
-            detalle.setProducto(producto);
-            detalle.setCantidad(cantidadSolicitada);
-            detalle.setPrecioUnitario(producto.getPrecio());
-            detalle.calcularSubtotal();
-            detalles.add(detalle);
+    @PostMapping("/actualizar/{id}")
+    public String actualizarCompra(@PathVariable Long id, @ModelAttribute("compra") Compra compraActualizada) {
+        compraService.actualizarCompra(id, compraActualizada);
+        return "redirect:/compras?success=updated";
+    }
+
+    @PostMapping("/eliminar/{id}")
+    public String eliminarCompra(@PathVariable Long id) {
+        compraService.eliminarCompra(id);
+        return "redirect:/compras?success=deleted";
+    }
+
+    @GetMapping("/detalle/{id}")
+    @Transactional(readOnly = true)
+    public String verDetalleCompra(@PathVariable("id") Long id, Model model) {
+        Compra compra = compraService.obtenerCompraPorIdConDetalles(id);
+        if (compra == null) {
+            throw new ResourceNotFoundException("Compra no encontrada");
         }
 
-        compra.setDetalles(detalles);
-        compra.setCliente(clienteService.obtenerClientePorId(clienteId));
-        compra.calcularTotal();
+        // Forzar carga de detalles para evitar LazyInitializationException
+        compra.getCompraDetalles().size();
 
-        compraService.guardarCompra(compra, clienteId, detalles);
-        redirectAttributes.addFlashAttribute("success", "Compra realizada exitosamente.");
-        return "redirect:/compras/detalle/" + compra.getId();
+        // Imprimir detalles en la consola para depuración
+        compra.getCompraDetalles().forEach(detalle -> {
+            System.out.println("Producto: " + detalle.getProducto().getNombre());
+            System.out.println("Cantidad: " + detalle.getCantidad());
+            System.out.println("Precio Unitario: " + detalle.getPrecioUnitario());
+            System.out.println("Subtotal: " + detalle.getSubtotal());
+        });
+
+        model.addAttribute("compra", compra);
+        return "detalle_compra";
+    }
+
+
+    @GetMapping("/historial")
+    public String filtrarHistorialCompras(
+            @RequestParam(value = "fechaInicio", required = false) LocalDate fechaInicio,
+            @RequestParam(value = "fechaFin", required = false) LocalDate fechaFin,
+            @RequestParam(value = "clienteId", required = false) Long clienteId,
+            @RequestParam(value = "estado", required = false) String estado,
+            Model model
+    ) {
+        LocalDateTime inicio = fechaInicio != null ? fechaInicio.atStartOfDay() : null;
+        LocalDateTime fin = fechaFin != null ? fechaFin.atTime(23, 59, 59) : null;
+        List<Compra> compras = compraService.obtenerComprasFiltradas(inicio, fin, clienteId, estado);
+        model.addAttribute("compras", compras);
+        model.addAttribute("clientes", clienteService.obtenerTodosLosClientes());
+        return "historial_compras";
     }
 }
+
+
+
+
+
 
 
 

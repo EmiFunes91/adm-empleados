@@ -3,15 +3,13 @@ package com.api.adm.controllers;
 import com.api.adm.entity.Compra;
 import com.api.adm.service.CompraService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
+import java.time.LocalDateTime;
 import java.util.List;
 
-@Controller
-@RequestMapping("/compras")
+@RestController
+@RequestMapping("/api/compras")
 public class CompraController {
 
     private final CompraService compraService;
@@ -22,36 +20,39 @@ public class CompraController {
     }
 
     @GetMapping
-    public String obtenerTodasLasCompras(@RequestParam(value = "query", required = false) String query, Model model) {
-        List<Compra> compras = (query != null && !query.trim().isEmpty())
-                ? compraService.buscarPorClienteOFecha(query)
-                : compraService.obtenerTodasLasCompras();
-        model.addAttribute("compras", compras);
-        model.addAttribute("query", query);
-        return "historial_compras";
+    public List<Compra> obtenerTodasLasCompras() {
+        return compraService.obtenerComprasPorRangoFecha(
+                LocalDateTime.now().minusMonths(1), LocalDateTime.now()
+        );
     }
 
-    @GetMapping("/detalle/{id}")
-    public String obtenerCompraPorId(@PathVariable Long id, Model model) {
+    @GetMapping("/{id}")
+    public ResponseEntity<Compra> obtenerCompraPorId(@PathVariable Long id) {
         Compra compra = compraService.obtenerCompraPorId(id);
-        if (compra == null) {
-            return "redirect:/compras?error=notfound";
-        }
-        model.addAttribute("compra", compra);
-        return "detalle_compra";
+        return ResponseEntity.ok(compra);
     }
 
-    @PostMapping("/eliminar/{id}")
-    public String eliminarCompra(@PathVariable("id") Long id, RedirectAttributes redirectAttributes) {
-        try {
-            compraService.eliminarCompra(id);
-            redirectAttributes.addFlashAttribute("success", "Compra eliminada exitosamente.");
-        } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("error", "Error al eliminar la compra. Verifique la información.");
-        }
-        return "redirect:/compras";
+    @PostMapping
+    public ResponseEntity<Compra> crearCompra(@RequestBody Compra compra) {
+        Compra nuevaCompra = compraService.crearCompra(compra);
+        return ResponseEntity.ok(nuevaCompra);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Compra> actualizarCompra(@PathVariable Long id, @RequestBody Compra compraActualizada) {
+        Compra compraActual = compraService.actualizarCompra(id, compraActualizada);
+        return ResponseEntity.ok(compraActual);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> eliminarCompra(@PathVariable Long id) {
+        compraService.eliminarCompra(id);
+        return ResponseEntity.noContent().build();
     }
 }
+
+
+
 
 
 

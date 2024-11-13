@@ -3,26 +3,33 @@ package com.api.adm.repository;
 import com.api.adm.entity.Compra;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
 @Repository
 public interface CompraRepository extends JpaRepository<Compra, Long> {
 
-    @Query("SELECT c FROM Compra c LEFT JOIN FETCH c.detalles WHERE c.id = :id")
-    Optional<Compra> findByIdWithDetalles(Long id);
+    List<Compra> findByFechaCompraBetween(LocalDateTime fechaInicio, LocalDateTime fechaFin);
+    List<Compra> findByFechaCompraBetweenAndClienteId(LocalDateTime fechaInicio, LocalDateTime fechaFin, Long clienteId);
+    List<Compra> findByFechaCompraBetweenAndEstado(LocalDateTime fechaInicio, LocalDateTime fechaFin, String estado);
+    List<Compra> findByFechaCompraBetweenAndClienteIdAndEstado(LocalDateTime fechaInicio, LocalDateTime fechaFin, Long clienteId, String estado);
+    List<Compra> findByClienteId(Long clienteId);
+    List<Compra> findByEstado(String estado);
 
-    @Query("SELECT c FROM Compra c LEFT JOIN FETCH c.detalles")
-    List<Compra> findAllWithDetalles();
+    @Query("SELECT c FROM Compra c LEFT JOIN FETCH c.compraDetalles WHERE c.fechaCompra BETWEEN :fechaInicio AND :fechaFin")
+    List<Compra> findByFechaCompraBetweenWithDetalles(@Param("fechaInicio") LocalDateTime fechaInicio, @Param("fechaFin") LocalDateTime fechaFin);
 
-    // Nuevo método para buscar por cliente o fecha
-    @Query("SELECT c FROM Compra c LEFT JOIN FETCH c.detalles d WHERE " +
-            "(LOWER(c.cliente.nombre) LIKE LOWER(CONCAT('%', :query, '%')) " +
-            "OR LOWER(c.cliente.apellido) LIKE LOWER(CONCAT('%', :query, '%')) " +
-            "OR CAST(c.fecha AS string) LIKE CONCAT('%', :query, '%'))")
-    List<Compra> findByClienteOrFechaContainingIgnoreCase(String query);
+    @Query("SELECT c FROM Compra c LEFT JOIN FETCH c.compraDetalles WHERE c.id = :id")
+    Optional<Compra> findByIdWithDetalles(@Param("id") Long id);
 }
+
+
+
+
+
+
 
 

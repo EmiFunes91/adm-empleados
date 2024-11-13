@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar Compra</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/custom-styles.css}">
+</head>
+<body class="bg-dark text-light">
+
+<!-- Barra de navegación -->
+<nav class="navbar navbar-expand-lg navbar-dark">
+    <div class="container">
+        <a class="navbar-brand" th:href="@{/dashboard}">Admin Panel</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item"><a class="nav-link" th:href="@{/empleados}">Empleados</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/cajeros}">Cajeros</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/usuarios}">Usuarios</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/productos}">Productos</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/clientes}">Clientes</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/compras}">Compras</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/facturacion}">Facturación</a></li>
+                <li class="nav-item">
+                    <form id="logoutForm" action="/logout" method="POST" style="display: inline;">
+                        <button type="submit" class="nav-link btn btn-danger text-white logout-button">Cerrar Sesión</button>
+                        <input type="hidden" name="_csrf" th:value="${_csrf.token}"/>
+                    </form>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container mt-5">
+    <h1 class="text-center mb-4">Editar Compra</h1>
+    <div class="card shadow-sm bg-secondary">
+        <div class="card-header bg-dark text-white text-center">
+            <h3>Detalles de la Compra</h3>
+        </div>
+        <div class="card-body">
+            <form th:action="@{/compras/actualizar/{id}(id=${compra.id})}" th:object="${compra}" method="post">
+                <div class="mb-3">
+                    <label for="cliente" class="form-label">Cliente</label>
+                    <select id="cliente" name="clienteId" class="form-select" required>
+                        <option value="" disabled>Selecciona un cliente</option>
+                        <option th:each="cliente : ${clientes}" th:value="${cliente.id}" th:text="|${cliente.nombre} ${cliente.apellido}|" th:selected="${cliente.id == compra.cliente.id}"></option>
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label for="buscarProducto" class="form-label">Buscar Producto</label>
+                    <input type="text" id="buscarProducto" class="form-control" placeholder="Buscar producto..." oninput="filtrarProductos()">
+                    <ul class="list-group mt-2" id="listaProductos"></ul>
+                </div>
+
+                <div class="mb-3">
+                    <h4>Productos Seleccionados</h4>
+                    <table class="table table-hover table-bordered">
+                        <thead class="table-dark">
+                        <tr>
+                            <th>Producto</th>
+                            <th>Cantidad</th>
+                            <th>Precio Unitario</th>
+                            <th>Subtotal</th>
+                            <th>Acciones</th>
+                        </tr>
+                        </thead>
+                        <tbody id="productosSeleccionados" th:each="detalle : ${compra.compraDetalles}">
+                        <tr th:attr="data-product-id=${detalle.producto.id}">
+                            <td th:text="${detalle.producto.nombre}">Producto</td>
+                            <td><input type="number" class="product-quantity form-control" th:value="${detalle.cantidad}" min="1" max="${detalle.producto.stock}" data-price="${detalle.precioUnitario}" oninput="updateTotal()"></td>
+                            <td th:text="${detalle.precioUnitario}">Precio Unitario</td>
+                            <td class="subtotal" th:text="${detalle.subtotal}">Subtotal</td>
+                            <td><button type="button" class="btn btn-danger" onclick="removeProduct(this, '${detalle.producto.id}')">Eliminar</button></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="mb-3">
+                    <label for="total" class="form-label">Total</label>
+                    <input type="text" id="total" th:field="*{total}" class="form-control" readonly />
+                </div>
+
+                <div id="hiddenFieldsContainer"></div>
+
+                <div class="d-grid">
+                    <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="/js/compra-validation.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+
+
+
+
+
+
+

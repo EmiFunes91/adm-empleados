@@ -3,12 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestión de Clientes</title>
+    <title>Gestión de Compras</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" th:href="@{/css/custom-styles.css}">
 </head>
 <body class="bg-dark text-light">
 
+<!-- Barra de navegación -->
 <nav class="navbar navbar-expand-lg navbar-dark">
     <div class="container">
         <a class="navbar-brand" th:href="@{/dashboard}">Admin Panel</a>
@@ -36,52 +37,60 @@
 </nav>
 
 <div class="container mt-5">
-    <h1 class="text-center mb-3">Gestión de Clientes</h1>
+    <h1 class="text-center mb-3">Gestión de Compras</h1>
     <div class="card shadow-sm bg-secondary">
         <div class="card-header bg-dark text-white text-center">
-            <h1 class="h3">Lista de Clientes Registrados</h1>
+            <h1 class="h3">Historial de Compras</h1>
         </div>
         <div class="card-body">
-
-            <div th:if="${param.success == 'created'}" class="alert alert-success">Cliente creado exitosamente.</div>
-            <div th:if="${param.success == 'updated'}" class="alert alert-success">Cambios guardados exitosamente.</div>
-            <div th:if="${param.success == 'deleted'}" class="alert alert-success">Cliente eliminado exitosamente.</div>
+            <div th:if="${param.success == 'created'}" class="alert alert-success">Compra registrada exitosamente.</div>
+            <div th:if="${param.success == 'deleted'}" class="alert alert-danger">Compra eliminada correctamente.</div>
+            <div th:if="${param.success == 'updated'}" class="alert alert-info">Compra actualizada correctamente.</div>
 
             <div class="mb-3 text-end">
-                <a class="btn btn-success" th:href="@{/clientes/nuevo}">Agregar Nuevo Cliente</a>
+                <a class="btn btn-success" th:href="@{/compras/nueva}">Registrar Nueva Compra</a>
             </div>
 
-            <form th:action="@{/clientes}" method="get" class="d-flex mb-3">
-                <input type="text" name="query" class="form-control me-2" th:value="${query}" placeholder="Buscar por nombre o apellido">
+            <!-- Buscador de compras -->
+            <form th:action="@{/compras}" method="get" class="d-flex mb-3">
+                <input type="text" name="query" class="form-control me-2" th:value="${query}" placeholder="Buscar por cliente o fecha">
                 <button type="submit" class="btn btn-dark">Buscar</button>
             </form>
 
-            <table class="table table-hover table-bordered">
+            <!-- Tabla de compras -->
+            <table class="table table-hover table-bordered text-light">
                 <thead class="table-dark">
                 <tr>
                     <th>ID</th>
-                    <th>Nombre</th>
-                    <th>Apellido</th>
-                    <th>DNI</th>
-                    <th>Correo</th>
-                    <th>Teléfono</th>
-                    <th>Estado</th>
+                    <th>Cliente</th>
+                    <th>Fecha</th>
+                    <th>Productos</th>
+                    <th>Cantidades</th>
+                    <th>Total</th>
                     <th>Acciones</th>
                 </tr>
                 </thead>
                 <tbody>
-                <tr th:each="cliente : ${clientes}">
-                    <td th:text="${cliente.id}">ID</td>
-                    <td th:text="${cliente.nombre}">Nombre</td>
-                    <td th:text="${cliente.apellido}">Apellido</td>
-                    <td th:text="${cliente.dni}">DNI</td>
-                    <td th:text="${cliente.correo}">Correo</td>
-                    <td th:text="${cliente.telefono}">Teléfono</td>
-                    <td th:text="${cliente.estado}">Estado</td>
+                <tr th:each="compra : ${compras}">
+                    <td th:text="${compra.id}">ID</td>
+                    <td th:text="${compra.cliente.nombre + ' ' + compra.cliente.apellido}">Cliente</td>
+                    <td th:text="${#temporals.format(compra.fechaCompra, 'yyyy-MM-dd')}">Fecha</td>
                     <td>
-                        <a class="btn btn-primary btn-sm me-1" th:href="@{/clientes/editar/{id}(id=${cliente.id})}">Editar</a>
-                        <form th:action="@{/clientes/eliminar/{id}(id=${cliente.id})}" method="post" style="display: inline;" onsubmit="return confirm('¿Estás seguro de que deseas eliminar este cliente?')">
-                            <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
+                        <div th:each="detalle : ${compra.compraDetalles}">
+                            <span th:text="${detalle.producto.nombre}"></span><br>
+                        </div>
+                    </td>
+                    <td>
+                        <div th:each="detalle : ${compra.compraDetalles}">
+                            <span th:text="${detalle.cantidad}"></span><br>
+                        </div>
+                    </td>
+                    <td th:text="${#numbers.formatDecimal(compra.total, 1, 2)}">Total</td>
+                    <td>
+                        <a class="btn btn-primary btn-sm me-1" th:href="@{/compras/detalle/{id}(id=${compra.id})}">Ver Detalles</a>
+                        <a class="btn btn-warning btn-sm me-1" th:href="@{/compras/editar/{id}(id=${compra.id})}">Editar</a>
+                        <form th:action="@{/compras/eliminar/{id}(id=${compra.id})}" method="post" class="d-inline">
+                            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('¿Estás seguro de eliminar esta compra?');">Eliminar</button>
                         </form>
                     </td>
                 </tr>
@@ -90,9 +99,9 @@
         </div>
     </div>
 </div>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
-
 
 

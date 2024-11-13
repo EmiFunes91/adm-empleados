@@ -40,7 +40,10 @@
                     <a class="nav-link" th:href="@{/facturacion}">Facturación</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link btn btn-danger text-white" th:href="@{/logout}">Cerrar Sesión</a>
+                    <form id="logoutForm" action="/logout" method="POST" style="display: inline;">
+                        <button type="submit" class="nav-link btn btn-danger text-white logout-button">Cerrar Sesión</button>
+                        <input type="hidden" name="_csrf" th:value="${_csrf.token}"/>
+                    </form>
                 </li>
             </ul>
         </div>

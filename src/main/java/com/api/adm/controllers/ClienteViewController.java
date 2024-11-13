@@ -21,7 +21,7 @@ public class ClienteViewController {
     @GetMapping
     public String listarClientes(@RequestParam(value = "query", required = false) String query, Model model) {
         List<Cliente> clientes = (query != null && !query.isEmpty())
-                ? clienteService.buscarClientesPorNombreOApellido(query)  // Cambiado para llamar al método correcto
+                ? clienteService.buscarClientesPorNombreOApellido(query)
                 : clienteService.obtenerTodosLosClientes();
         model.addAttribute("clientes", clientes);
         model.addAttribute("query", query);
@@ -37,13 +37,12 @@ public class ClienteViewController {
     @PostMapping("/guardar")
     public String guardarCliente(@Valid @ModelAttribute("cliente") Cliente cliente, BindingResult result, Model model) {
         if (result.hasErrors()) {
-            model.addAttribute("cliente", cliente); // Mantén los datos ingresados
-            return "formulario_cliente"; // Vuelve a la vista con los errores
+            model.addAttribute("cliente", cliente);
+            return "formulario_cliente";
         }
         clienteService.crearCliente(cliente);
         return "redirect:/clientes?success=created";
     }
-
 
     @GetMapping("/editar/{id}")
     public String mostrarFormularioEditarCliente(@PathVariable Long id, Model model) {
@@ -58,8 +57,8 @@ public class ClienteViewController {
     @PostMapping("/actualizar/{id}")
     public String actualizarCliente(@PathVariable Long id, @Valid @ModelAttribute("cliente") Cliente clienteActualizado, BindingResult result, Model model) {
         if (result.hasErrors()) {
-            model.addAttribute("cliente", clienteActualizado); // Mantener los datos ingresados en el formulario
-            return "editar_clientes"; // Regresar a la vista con los errores
+            model.addAttribute("cliente", clienteActualizado);
+            return "editar_clientes";
         }
         clienteService.actualizarCliente(id, clienteActualizado);
         return "redirect:/clientes?success=updated";
@@ -71,3 +70,4 @@ public class ClienteViewController {
         return "redirect:/clientes?success=deleted";
     }
 }
+

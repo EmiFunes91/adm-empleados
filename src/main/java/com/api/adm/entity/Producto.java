@@ -40,10 +40,6 @@ public class Producto {
     @Column(nullable = false)
     private boolean activo = true;
 
-    // Constructor por defecto
-    public Producto() {}
-
-    // Getters y Setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
@@ -65,7 +61,6 @@ public class Producto {
     public boolean isActivo() { return activo; }
     public void setActivo(boolean activo) { this.activo = activo; }
 
-    // Método para reducir el stock de forma segura
     public void reducirStock(int cantidad) {
         if (cantidad > this.stock) {
             throw new IllegalArgumentException("Cantidad solicitada excede el stock disponible");

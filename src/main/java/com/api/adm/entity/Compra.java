@@ -1,104 +1,88 @@
 package com.api.adm.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import java.math.BigDecimal;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@Table(name = "compras")
 public class Compra {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotNull(message = "La fecha de la compra es obligatoria")
+    private LocalDateTime fechaCompra;
+
+    @Enumerated(EnumType.STRING)
+    @NotNull(message = "El estado de la compra es obligatorio")
+    private EstadoCompra estado = EstadoCompra.PENDIENTE;
+
     @ManyToOne
+    @JoinColumn(name = "cliente_id", nullable = false)
     private Cliente cliente;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<CompraDetalle> detalles = new ArrayList<>();
+    @NotNull(message = "El total de la compra es obligatorio")
+    private BigDecimal total = BigDecimal.ZERO;
 
-    private BigDecimal total;
+    @OneToMany(mappedBy = "compra", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<CompraDetalle> compraDetalles = new ArrayList<>();
 
-    @Column(name = "fecha")
-    private LocalDate fecha;
-
-    @Transient
-    private Long nuevoProductoId;
-
-    @Transient
-    private Integer cantidad;
-
-    // Constructor para inicializar la fecha con la fecha actual
     public Compra() {
-        this.fecha = LocalDate.now();
+        this.compraDetalles = new ArrayList<>();
     }
 
-    // Método para calcular el total
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+
+    public LocalDateTime getFechaCompra() { return fechaCompra; }
+    public void setFechaCompra(LocalDateTime fechaCompra) { this.fechaCompra = fechaCompra; }
+
+    public EstadoCompra getEstado() { return estado; }
+    public void setEstado(EstadoCompra estado) { this.estado = estado; }
+
+    public Cliente getCliente() { return cliente; }
+    public void setCliente(Cliente cliente) { this.cliente = cliente; }
+
+    public BigDecimal getTotal() { return total; }
+    public void setTotal(BigDecimal total) { this.total = total; }
+
+    public List<CompraDetalle> getCompraDetalles() { return compraDetalles; }
+    public void setCompraDetalles(List<CompraDetalle> compraDetalles) {
+        this.compraDetalles = compraDetalles;
+        calcularTotal();
+    }
+
     public void calcularTotal() {
-        total = detalles.stream()
+        this.total = compraDetalles.stream()
                 .map(CompraDetalle::getSubtotal)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
-    // Getters y setters
-
-    public Long getId() {
-        return id;
+    public void agregarDetalle(CompraDetalle detalle) {
+        detalle.setCompra(this);
+        compraDetalles.add(detalle);
+        calcularTotal();
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Cliente getCliente() {
-        return cliente;
-    }
-
-    public void setCliente(Cliente cliente) {
-        this.cliente = cliente;
-    }
-
-    public List<CompraDetalle> getDetalles() {
-        return detalles;
-    }
-
-    public void setDetalles(List<CompraDetalle> detalles) {
-        this.detalles = detalles;
-    }
-
-    public BigDecimal getTotal() {
-        return total;
-    }
-
-    public void setTotal(BigDecimal total) {
-        this.total = total;
-    }
-
-    public LocalDate getFecha() {
-        return fecha;
-    }
-
-    public void setFecha(LocalDate fecha) {
-        this.fecha = fecha;
-    }
-
-    public Long getNuevoProductoId() {
-        return nuevoProductoId;
-    }
-
-    public void setNuevoProductoId(Long nuevoProductoId) {
-        this.nuevoProductoId = nuevoProductoId;
-    }
-
-    public Integer getCantidad() {
-        return cantidad;
-    }
-
-    public void setCantidad(Integer cantidad) {
-        this.cantidad = cantidad;
+    public void eliminarDetalle(CompraDetalle detalle) {
+        detalle.setCompra(null);
+        compraDetalles.remove(detalle);
+        calcularTotal();
     }
 }
+
+enum EstadoCompra {
+    PENDIENTE,
+    COMPLETADA,
+    CANCELADA
+}
+
+
 
 
 

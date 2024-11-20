@@ -13,12 +13,17 @@ import java.util.Optional;
 public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
     Optional<Usuario> findByUsername(String username);
     Optional<Usuario> findByEmail(String email);
+    Optional<Usuario> findByActivationToken(String token);
+    Optional<Usuario> findByResetPasswordToken(String token);
 
-    List<Usuario> findByUsernameContainingIgnoreCaseOrEmailContainingIgnoreCase(String username, String email);
+    @Query("SELECT u FROM Usuario u WHERE LOWER(u.username) LIKE LOWER(CONCAT('%', :query, '%')) OR LOWER(u.email) LIKE LOWER(CONCAT('%', :query, '%'))")
+    List<Usuario> findByUsernameContainingIgnoreCaseOrEmailContainingIgnoreCase(@Param("query") String query);
 
-    @Query("SELECT u FROM Usuario u JOIN u.roles r WHERE r.name = :roleName")
+    @Query("SELECT u FROM Usuario u JOIN u.roles r WHERE LOWER(r.name) = LOWER(:roleName)")
     List<Usuario> findUsuariosByRolName(@Param("roleName") String roleName);
 }
+
+
 
 
 

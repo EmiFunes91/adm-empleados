@@ -1,6 +1,7 @@
 package com.api.adm.entity;
 
 import jakarta.persistence.*;
+import java.time.LocalDateTime;
 import java.util.Set;
 
 @Entity
@@ -22,6 +23,12 @@ public class Usuario {
             inverseJoinColumns = @JoinColumn(name = "role_id")
     )
     private Set<Role> roles;
+
+    private String activationToken;
+    private LocalDateTime tokenExpiration;
+
+    private String resetPasswordToken;
+    private LocalDateTime resetPasswordExpiration;
 
     // Getters y setters
     public Long getId() {
@@ -70,6 +77,38 @@ public class Usuario {
 
     public void setActivo(boolean activo) {
         this.activo = activo;
+    }
+
+    public String getActivationToken() {
+        return activationToken;
+    }
+
+    public void setActivationToken(String activationToken) {
+        this.activationToken = activationToken;
+    }
+
+    public LocalDateTime getTokenExpiration() {
+        return tokenExpiration;
+    }
+
+    public void setTokenExpiration(LocalDateTime tokenExpiration) {
+        this.tokenExpiration = tokenExpiration;
+    }
+
+    public String getResetPasswordToken() {
+        return resetPasswordToken;
+    }
+
+    public void setResetPasswordToken(String resetPasswordToken) {
+        this.resetPasswordToken = resetPasswordToken;
+    }
+
+    public LocalDateTime getResetPasswordExpiration() {
+        return resetPasswordExpiration;
+    }
+
+    public void setResetPasswordExpiration(LocalDateTime resetPasswordExpiration) {
+        this.resetPasswordExpiration = resetPasswordExpiration;
     }
 }
 

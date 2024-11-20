@@ -7,7 +7,7 @@ import java.util.Set;
 
 public class UsuarioDTO {
 
-    private Long id; // Agregar el campo id
+    private Long id;
 
     @NotBlank(message = "El nombre de usuario es obligatorio")
     @Size(min = 3, max = 20, message = "El nombre de usuario debe tener entre 3 y 20 caracteres")
@@ -64,6 +64,7 @@ public class UsuarioDTO {
         this.roles = roles;
     }
 }
+
 
 
 
